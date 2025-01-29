@@ -4,7 +4,7 @@ import { NumberInput } from "@/components/NumberInput";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Star, Frown, Smile } from "lucide-react";
+import { Star, Frown, Smile, RotateCcw } from "lucide-react";
 
 export default function Index() {
   const [num1, setNum1] = useState(1);
@@ -24,6 +24,18 @@ export default function Index() {
     setNum2(randomNum2);
     setAnswer("");
     setIsCorrect(null);
+  };
+
+  const startOver = () => {
+    setScore(0);
+    setAnswer("");
+    setIsCorrect(null);
+    generateQuestion();
+    toast({
+      title: "Game Reset!",
+      description: "Let's start a new game!",
+      duration: 2000,
+    });
   };
 
   const checkAnswer = () => {
@@ -62,7 +74,18 @@ export default function Index() {
       <div className="w-full max-w-lg">
         <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-white">Space Math!</h1>
-          <ScoreDisplay score={score} highScore={highScore} />
+          <div className="flex items-center gap-4">
+            <ScoreDisplay score={score} highScore={highScore} />
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={startOver}
+              className="bg-transparent border-white text-white hover:bg-white/20"
+              title="Start Over"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         <GameCard className="mb-6 animate-float">
