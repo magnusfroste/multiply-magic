@@ -15,6 +15,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
+type QuestionPart = "first" | "second" | "result";
+
 export default function Index() {
   const [num1, setNum1] = useState(1);
   const [num2, setNum2] = useState(1);
@@ -25,6 +27,8 @@ export default function Index() {
   const [selectedTables, setSelectedTables] = useState<number[]>([1, 2, 5, 10]);
   const [isTrainingMode, setIsTrainingMode] = useState(false);
   const [selectedTrainingTable, setSelectedTrainingTable] = useState(5);
+  const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
+  const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["result"]);
   const { toast } = useToast();
 
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -45,6 +49,12 @@ export default function Index() {
     setNum2(randomNum2);
     setAnswer("");
     setIsCorrect(null);
+
+    // Randomly select which part of the equation to hide
+    if (allowedQuestionParts.length > 0) {
+      const randomPart = allowedQuestionParts[Math.floor(Math.random() * allowedQuestionParts.length)];
+      setQuestionPart(randomPart);
+    }
   };
 
   const startOver = () => {
@@ -61,9 +71,25 @@ export default function Index() {
 
   const checkAnswer = () => {
     const userAnswer = parseInt(answer);
-    const correctAnswer = num1 * num2;
+    let isAnswerCorrect = false;
+    let correctAnswer: number;
+
+    switch (questionPart) {
+      case "first":
+        correctAnswer = num2 === 0 ? 0 : (num1 * num2) / num2;
+        isAnswerCorrect = userAnswer === correctAnswer;
+        break;
+      case "second":
+        correctAnswer = num1 === 0 ? 0 : (num1 * num2) / num1;
+        isAnswerCorrect = userAnswer === correctAnswer;
+        break;
+      case "result":
+        correctAnswer = num1 * num2;
+        isAnswerCorrect = userAnswer === correctAnswer;
+        break;
+    }
     
-    if (userAnswer === correctAnswer) {
+    if (isAnswerCorrect) {
       setIsCorrect(true);
       setScore(score + 1);
       if (score + 1 > highScore) {
@@ -79,7 +105,7 @@ export default function Index() {
       setIsCorrect(false);
       toast({
         title: "Not quite right",
-        description: `${num1} × ${num2} = ${correctAnswer}. Let's try another one!`,
+        description: `${num1} × ${num2} = ${num1 * num2}. Let's try another one!`,
         duration: 3000,
       });
       setTimeout(generateQuestion, 3000);
@@ -102,6 +128,24 @@ export default function Index() {
         toast({
           title: "Warning",
           description: "You must keep at least one table selected",
+          duration: 3000,
+        });
+        return current;
+      }
+      return updated;
+    });
+  };
+
+  const handleQuestionPartToggle = (part: QuestionPart) => {
+    setAllowedQuestionParts((current) => {
+      const updated = current.includes(part)
+        ? current.filter((p) => p !== part)
+        : [...current, part];
+      
+      if (updated.length === 0) {
+        toast({
+          title: "Warning",
+          description: "You must keep at least one question type selected",
           duration: 3000,
         });
         return current;
@@ -178,6 +222,41 @@ export default function Index() {
                       </div>
                     ))}
                   </div>
+
+                  {!isTrainingMode && (
+                    <div className="mt-8">
+                      <h3 className="mb-4 text-sm font-medium">Question Types:</h3>
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="first-number"
+                            checked={allowedQuestionParts.includes("first")}
+                            onCheckedChange={() => handleQuestionPartToggle("first")}
+                            disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("first")}
+                          />
+                          <label htmlFor="first-number">Hide First Number</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="second-number"
+                            checked={allowedQuestionParts.includes("second")}
+                            onCheckedChange={() => handleQuestionPartToggle("second")}
+                            disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("second")}
+                          />
+                          <label htmlFor="second-number">Hide Second Number</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="result"
+                            checked={allowedQuestionParts.includes("result")}
+                            onCheckedChange={() => handleQuestionPartToggle("result")}
+                            disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("result")}
+                          />
+                          <label htmlFor="result">Hide Result</label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
@@ -191,17 +270,41 @@ export default function Index() {
             <GameCard className="mb-6 animate-float">
               <div className="text-center">
                 <div className="text-4xl font-bold mb-6 text-white flex items-center justify-center gap-4">
-                  <span>{num1}</span>
+                  {questionPart === "first" ? (
+                    <NumberInput
+                      value={answer}
+                      onChange={setAnswer}
+                      className="w-24"
+                      placeholder="?"
+                      disabled={isCorrect !== null}
+                    />
+                  ) : (
+                    <span>{num1}</span>
+                  )}
                   <span>×</span>
-                  <span>{num2}</span>
+                  {questionPart === "second" ? (
+                    <NumberInput
+                      value={answer}
+                      onChange={setAnswer}
+                      className="w-24"
+                      placeholder="?"
+                      disabled={isCorrect !== null}
+                    />
+                  ) : (
+                    <span>{num2}</span>
+                  )}
                   <span>=</span>
-                  <NumberInput
-                    value={answer}
-                    onChange={setAnswer}
-                    className="w-24"
-                    placeholder="?"
-                    disabled={isCorrect !== null}
-                  />
+                  {questionPart === "result" ? (
+                    <NumberInput
+                      value={answer}
+                      onChange={setAnswer}
+                      className="w-24"
+                      placeholder="?"
+                      disabled={isCorrect !== null}
+                    />
+                  ) : (
+                    <span>{num1 * num2}</span>
+                  )}
                 </div>
                 
                 {isCorrect === null && (
