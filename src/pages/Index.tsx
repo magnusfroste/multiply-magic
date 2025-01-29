@@ -38,12 +38,10 @@ export default function Index() {
     options.add(correctAnswer);
     
     while (options.size < 5) {
-      // Generate wrong answers that are close to the correct one
       const offset = Math.floor(Math.random() * 5) + 1;
       const isAdd = Math.random() > 0.5;
       const wrongAnswer = isAdd ? correctAnswer + offset : correctAnswer - offset;
       
-      // Ensure we don't add negative numbers or zero
       if (wrongAnswer > 0) {
         options.add(wrongAnswer);
       }
@@ -69,7 +67,6 @@ export default function Index() {
     setAnswer("");
     setIsCorrect(null);
 
-    // Generate options based on the correct answer
     const correctAnswer = randomNum1 * randomNum2;
     const newOptions = generateOptions(correctAnswer);
     setOptions(newOptions);
@@ -111,6 +108,10 @@ export default function Index() {
         isAnswerCorrect = userAnswer === correctAnswer;
         break;
     }
+
+    console.log('User answer:', userAnswer);
+    console.log('Correct answer:', correctAnswer);
+    console.log('Question part:', questionPart);
     
     if (isAnswerCorrect) {
       setIsCorrect(true);
@@ -138,11 +139,6 @@ export default function Index() {
           errorMessage = `${num1} × ${num2} = ${num1 * num2}`;
           break;
       }
-      
-      // Add console logs to help debug
-      console.log('User answer:', userAnswer);
-      console.log('Correct answer:', correctAnswer);
-      console.log('Question part:', questionPart);
       
       toast({
         title: "Not quite right",
