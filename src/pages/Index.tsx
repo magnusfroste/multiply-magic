@@ -4,7 +4,15 @@ import { NumberInput } from "@/components/NumberInput";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Star, Frown, Smile, RotateCcw } from "lucide-react";
+import { Star, Frown, Smile, RotateCcw, Settings2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export default function Index() {
   const [num1, setNum1] = useState(1);
@@ -13,13 +21,23 @@ export default function Index() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [selectedTables, setSelectedTables] = useState<number[]>([1, 2, 5, 10]);
   const { toast } = useToast();
 
+  const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
+
   const generateQuestion = () => {
-    // Start with easier numbers (1,2,5,10) and gradually increase difficulty
-    const numbers = score < 5 ? [1, 2, 5, 10] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const randomNum1 = numbers[Math.floor(Math.random() * numbers.length)];
-    const randomNum2 = numbers[Math.floor(Math.random() * numbers.length)];
+    if (selectedTables.length === 0) {
+      toast({
+        title: "No tables selected",
+        description: "Please select at least one multiplication table in settings.",
+        duration: 3000,
+      });
+      return;
+    }
+
+    const randomNum1 = selectedTables[Math.floor(Math.random() * selectedTables.length)];
+    const randomNum2 = allTables[Math.floor(Math.random() * allTables.length)];
     setNum1(randomNum1);
     setNum2(randomNum2);
     setAnswer("");
@@ -65,6 +83,24 @@ export default function Index() {
     }
   };
 
+  const handleTableToggle = (table: number) => {
+    setSelectedTables((current) => {
+      const updated = current.includes(table)
+        ? current.filter((t) => t !== table)
+        : [...current, table].sort((a, b) => a - b);
+      
+      if (updated.length === 0) {
+        toast({
+          title: "Warning",
+          description: "You must keep at least one table selected",
+          duration: 3000,
+        });
+        return current;
+      }
+      return updated;
+    });
+  };
+
   useEffect(() => {
     generateQuestion();
   }, []);
@@ -85,6 +121,44 @@ export default function Index() {
             >
               <RotateCcw className="w-4 h-4" />
             </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="bg-transparent border-white text-white hover:bg-white/20"
+                  title="Settings"
+                >
+                  <Settings2 className="w-4 h-4" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Parent Settings</SheetTitle>
+                </SheetHeader>
+                <div className="py-4">
+                  <h3 className="mb-4 text-sm font-medium">Select Multiplication Tables:</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {allTables.map((table) => (
+                      <div key={table} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`table-${table}`}
+                          checked={selectedTables.includes(table)}
+                          onCheckedChange={() => handleTableToggle(table)}
+                          disabled={selectedTables.length === 1 && selectedTables.includes(table)}
+                        />
+                        <label
+                          htmlFor={`table-${table}`}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {table}x Table
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
 
