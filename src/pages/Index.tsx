@@ -99,11 +99,11 @@ export default function Index() {
 
     switch (questionPart) {
       case "first":
-        correctAnswer = num2 === 0 ? 0 : (num1 * num2) / num2;
+        correctAnswer = num1;  // Changed from: num2 === 0 ? 0 : (num1 * num2) / num2
         isAnswerCorrect = userAnswer === correctAnswer;
         break;
       case "second":
-        correctAnswer = num1 === 0 ? 0 : (num1 * num2) / num1;
+        correctAnswer = num2;  // Changed from: num1 === 0 ? 0 : (num1 * num2) / num1
         isAnswerCorrect = userAnswer === correctAnswer;
         break;
       case "result":
@@ -128,7 +128,7 @@ export default function Index() {
       setIsCorrect(false);
       toast({
         title: "Not quite right",
-        description: `${num1} × ${num2} = ${num1 * num2}. Let's try another one!`,
+        description: `The correct answer was ${correctAnswer}. Let's try another one!`,
         duration: 3000,
       });
       setTimeout(generateQuestion, 3000);
