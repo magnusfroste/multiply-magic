@@ -90,7 +90,8 @@ export default function Index() {
   };
 
   const checkAnswer = () => {
-    const userAnswer = parseInt(answer);
+    // Convert the answer string to a number
+    const userAnswer = Number(answer);
     let isAnswerCorrect = false;
     let correctAnswer: number;
 
