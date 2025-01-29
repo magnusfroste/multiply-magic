@@ -90,29 +90,29 @@ export default function Index() {
   };
 
   const checkAnswer = () => {
-    // Convert the answer string to a number
-    const userAnswer = Number(answer);
+    console.log('Selected answer:', answer);
     let isAnswerCorrect = false;
     let correctAnswer: number;
 
     switch (questionPart) {
       case "first":
         correctAnswer = num1;
-        isAnswerCorrect = userAnswer === correctAnswer;
+        isAnswerCorrect = Number(answer) === correctAnswer;
         break;
       case "second":
         correctAnswer = num2;
-        isAnswerCorrect = userAnswer === correctAnswer;
+        isAnswerCorrect = Number(answer) === correctAnswer;
         break;
       case "result":
         correctAnswer = num1 * num2;
-        isAnswerCorrect = userAnswer === correctAnswer;
+        isAnswerCorrect = Number(answer) === correctAnswer;
         break;
     }
 
-    console.log('User answer:', userAnswer);
-    console.log('Correct answer:', correctAnswer);
     console.log('Question part:', questionPart);
+    console.log('Correct answer:', correctAnswer);
+    console.log('User answer:', Number(answer));
+    console.log('Is correct?', isAnswerCorrect);
     
     if (isAnswerCorrect) {
       setIsCorrect(true);
@@ -148,6 +148,14 @@ export default function Index() {
       });
       setTimeout(generateQuestion, 2000);
     }
+  };
+
+  const handleOptionClick = (value: number) => {
+    if (isCorrect !== null) return;
+    setAnswer(value.toString());
+    setTimeout(() => {
+      checkAnswer();
+    }, 100);
   };
 
   const handleTableToggle = (table: number) => {
@@ -195,14 +203,6 @@ export default function Index() {
   useEffect(() => {
     generateQuestion();
   }, []);
-
-  const handleOptionClick = (value: number) => {
-    if (isCorrect !== null) return;
-    setAnswer(value.toString());
-    setTimeout(() => {
-      checkAnswer();
-    }, 100);
-  };
 
   return (
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
