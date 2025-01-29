@@ -19,7 +19,7 @@ type QuestionPart = "first" | "second" | "result";
 export default function Index() {
   const [num1, setNum1] = useState(1);
   const [num2, setNum2] = useState(1);
-  const [answer, setAnswer] = useState("");
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -64,7 +64,7 @@ export default function Index() {
     const randomNum2 = allTables[Math.floor(Math.random() * allTables.length)];
     setNum1(randomNum1);
     setNum2(randomNum2);
-    setAnswer("");
+    setSelectedAnswer(null);
     setIsCorrect(null);
 
     const correctAnswer = randomNum1 * randomNum2;
@@ -77,45 +77,36 @@ export default function Index() {
     }
   };
 
-  const startOver = () => {
-    setScore(0);
-    setAnswer("");
-    setIsCorrect(null);
-    generateQuestion();
-    toast({
-      title: "Game Reset!",
-      description: "Let's start a new game!",
-      duration: 2000,
-    });
-  };
-
   const checkAnswer = () => {
-    console.log('Selected answer:', answer);
-    let isAnswerCorrect = false;
+    if (selectedAnswer === null) return;
+
+    console.log('Selected answer:', selectedAnswer);
     let correctAnswer: number;
 
     switch (questionPart) {
       case "first":
         correctAnswer = num1;
-        isAnswerCorrect = Number(answer) === correctAnswer;
         break;
       case "second":
         correctAnswer = num2;
-        isAnswerCorrect = Number(answer) === correctAnswer;
         break;
       case "result":
         correctAnswer = num1 * num2;
-        isAnswerCorrect = Number(answer) === correctAnswer;
         break;
+      default:
+        correctAnswer = num1 * num2;
     }
 
     console.log('Question part:', questionPart);
     console.log('Correct answer:', correctAnswer);
-    console.log('User answer:', Number(answer));
+    console.log('User answer:', selectedAnswer);
+    
+    const isAnswerCorrect = selectedAnswer === correctAnswer;
     console.log('Is correct?', isAnswerCorrect);
     
+    setIsCorrect(isAnswerCorrect);
+
     if (isAnswerCorrect) {
-      setIsCorrect(true);
       setScore(score + 1);
       if (score + 1 > highScore) {
         setHighScore(score + 1);
@@ -127,7 +118,6 @@ export default function Index() {
       });
       setTimeout(generateQuestion, 1500);
     } else {
-      setIsCorrect(false);
       let errorMessage = "";
       switch (questionPart) {
         case "first":
@@ -152,10 +142,8 @@ export default function Index() {
 
   const handleOptionClick = (value: number) => {
     if (isCorrect !== null) return;
-    setAnswer(value.toString());
-    setTimeout(() => {
-      checkAnswer();
-    }, 100);
+    setSelectedAnswer(value);
+    setTimeout(checkAnswer, 100);
   };
 
   const handleTableToggle = (table: number) => {
@@ -197,6 +185,18 @@ export default function Index() {
         return current;
       }
       return updated;
+    });
+  };
+
+  const startOver = () => {
+    setScore(0);
+    setSelectedAnswer(null);
+    setIsCorrect(null);
+    generateQuestion();
+    toast({
+      title: "Game Reset!",
+      description: "Let's start a new game!",
+      duration: 2000,
     });
   };
 
@@ -343,7 +343,7 @@ export default function Index() {
                       disabled={isCorrect !== null}
                       variant="outline"
                       className={`text-xl font-bold ${
-                        answer === option.toString()
+                        selectedAnswer === option
                           ? isCorrect === true
                             ? "bg-green-500 hover:bg-green-600"
                             : isCorrect === false
