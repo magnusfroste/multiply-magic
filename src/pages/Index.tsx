@@ -138,6 +138,12 @@ export default function Index() {
           errorMessage = `${num1} × ${num2} = ${num1 * num2}`;
           break;
       }
+      
+      // Add console logs to help debug
+      console.log('User answer:', userAnswer);
+      console.log('Correct answer:', correctAnswer);
+      console.log('Question part:', questionPart);
+      
       toast({
         title: "Not quite right",
         description: `${errorMessage}. Let's try another one!`,
