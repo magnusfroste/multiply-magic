@@ -122,7 +122,7 @@ export default function Index() {
       toast({
         title: "Correct! 🎉",
         description: "Keep up the great work!",
-        duration: 2000,
+        duration: 1500,
       });
       setTimeout(generateQuestion, 1500);
     } else {
@@ -143,9 +143,9 @@ export default function Index() {
       toast({
         title: "Not quite right",
         description: `${errorMessage}. Let's try another one!`,
-        duration: 3000,
+        duration: 2000,
       });
-      setTimeout(generateQuestion, 3000);
+      setTimeout(generateQuestion, 2000);
     }
   };
 
