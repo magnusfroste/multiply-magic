@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { GameCard } from "@/components/GameCard";
-import { NumberInput } from "@/components/NumberInput";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -29,9 +28,29 @@ export default function Index() {
   const [selectedTrainingTable, setSelectedTrainingTable] = useState(5);
   const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
   const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["result"]);
+  const [options, setOptions] = useState<number[]>([]);
   const { toast } = useToast();
 
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
+
+  const generateOptions = (correctAnswer: number) => {
+    const options = new Set<number>();
+    options.add(correctAnswer);
+    
+    while (options.size < 5) {
+      // Generate wrong answers that are close to the correct one
+      const offset = Math.floor(Math.random() * 5) + 1;
+      const isAdd = Math.random() > 0.5;
+      const wrongAnswer = isAdd ? correctAnswer + offset : correctAnswer - offset;
+      
+      // Ensure we don't add negative numbers or zero
+      if (wrongAnswer > 0) {
+        options.add(wrongAnswer);
+      }
+    }
+    
+    return Array.from(options).sort((a, b) => a - b);
+  };
 
   const generateQuestion = () => {
     if (selectedTables.length === 0) {
@@ -50,7 +69,11 @@ export default function Index() {
     setAnswer("");
     setIsCorrect(null);
 
-    // Randomly select which part of the equation to hide
+    // Generate options based on the correct answer
+    const correctAnswer = randomNum1 * randomNum2;
+    const newOptions = generateOptions(correctAnswer);
+    setOptions(newOptions);
+
     if (allowedQuestionParts.length > 0) {
       const randomPart = allowedQuestionParts[Math.floor(Math.random() * allowedQuestionParts.length)];
       setQuestionPart(randomPart);
@@ -157,6 +180,14 @@ export default function Index() {
   useEffect(() => {
     generateQuestion();
   }, []);
+
+  const handleOptionClick = (value: number) => {
+    if (isCorrect !== null) return;
+    setAnswer(value.toString());
+    setTimeout(() => {
+      checkAnswer();
+    }, 100);
+  };
 
   return (
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
@@ -271,51 +302,45 @@ export default function Index() {
               <div className="text-center">
                 <div className="text-4xl font-bold mb-6 text-white flex items-center justify-center gap-4">
                   {questionPart === "first" ? (
-                    <NumberInput
-                      value={answer}
-                      onChange={setAnswer}
-                      className="w-24"
-                      placeholder="?"
-                      disabled={isCorrect !== null}
-                    />
+                    <span className="w-24">?</span>
                   ) : (
                     <span>{num1}</span>
                   )}
                   <span>×</span>
                   {questionPart === "second" ? (
-                    <NumberInput
-                      value={answer}
-                      onChange={setAnswer}
-                      className="w-24"
-                      placeholder="?"
-                      disabled={isCorrect !== null}
-                    />
+                    <span className="w-24">?</span>
                   ) : (
                     <span>{num2}</span>
                   )}
                   <span>=</span>
                   {questionPart === "result" ? (
-                    <NumberInput
-                      value={answer}
-                      onChange={setAnswer}
-                      className="w-24"
-                      placeholder="?"
-                      disabled={isCorrect !== null}
-                    />
+                    <span className="w-24">?</span>
                   ) : (
                     <span>{num1 * num2}</span>
                   )}
                 </div>
                 
-                {isCorrect === null && (
-                  <Button 
-                    onClick={checkAnswer}
-                    className="bg-game-primary hover:bg-game-secondary transition-colors"
-                    disabled={!answer}
-                  >
-                    Check Answer
-                  </Button>
-                )}
+                <div className="grid grid-cols-5 gap-2 mb-4">
+                  {options.map((option) => (
+                    <Button
+                      key={option}
+                      onClick={() => handleOptionClick(option)}
+                      disabled={isCorrect !== null}
+                      variant="outline"
+                      className={`text-xl font-bold ${
+                        answer === option.toString()
+                          ? isCorrect === true
+                            ? "bg-green-500 hover:bg-green-600"
+                            : isCorrect === false
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-white/20"
+                          : "bg-white/20"
+                      } hover:bg-white/30 text-white`}
+                    >
+                      {option}
+                    </Button>
+                  ))}
+                </div>
 
                 {isCorrect !== null && (
                   <div className={`flex items-center justify-center gap-2 text-xl font-bold ${isCorrect ? "text-green-400" : "text-red-400"}`}>
