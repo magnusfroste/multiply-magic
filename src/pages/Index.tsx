@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { GameCard } from "@/components/GameCard";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Star, Frown, Smile, RotateCcw, Settings2, Brain, Swords } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TrainingMode } from "@/components/TrainingMode";
@@ -67,22 +67,37 @@ export default function Index() {
     setSelectedAnswer(null);
     setIsCorrect(null);
 
-    const correctAnswer = randomNum1 * randomNum2;
-    const newOptions = generateOptions(correctAnswer);
-    setOptions(newOptions);
-
+    // Generate options based on the question part
+    let correctAnswer: number;
     if (allowedQuestionParts.length > 0) {
       const randomPart = allowedQuestionParts[Math.floor(Math.random() * allowedQuestionParts.length)];
       setQuestionPart(randomPart);
+      
+      switch (randomPart) {
+        case "first":
+          correctAnswer = randomNum1;
+          break;
+        case "second":
+          correctAnswer = randomNum2;
+          break;
+        case "result":
+          correctAnswer = randomNum1 * randomNum2;
+          break;
+        default:
+          correctAnswer = randomNum1 * randomNum2;
+      }
+    } else {
+      correctAnswer = randomNum1 * randomNum2;
     }
+
+    const newOptions = generateOptions(correctAnswer);
+    setOptions(newOptions);
   };
 
   const checkAnswer = () => {
     if (selectedAnswer === null) return;
 
-    console.log('Selected answer:', selectedAnswer);
     let correctAnswer: number;
-
     switch (questionPart) {
       case "first":
         correctAnswer = num1;
