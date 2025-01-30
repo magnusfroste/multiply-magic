@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Star, Frown, Smile, RotateCcw, Settings2, Brain, Swords, Timer } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TrainingMode } from "@/components/TrainingMode";
-import { useToast } from "@/hooks/use-toast";
 import {
   Sheet,
   SheetContent,
@@ -17,7 +16,6 @@ import {
 type QuestionPart = "first" | "second" | "result";
 
 export default function Index() {
-  const { toast } = useToast();
   const [num1, setNum1] = useState(1);
   const [num2, setNum2] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -30,7 +28,7 @@ export default function Index() {
   const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
   const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["result"]);
   const [options, setOptions] = useState<number[]>([]);
-  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(120);
   const [isGameActive, setIsGameActive] = useState(true);
 
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -54,7 +52,7 @@ export default function Index() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isGameActive && timeLeft > 0 && !isTrainingMode) { // Added !isTrainingMode check
+    if (isGameActive && timeLeft > 0 && !isTrainingMode) {
       timer = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
@@ -65,13 +63,11 @@ export default function Index() {
         });
       }, 1000);
 
-      // Add background color transition when 10 seconds remain
       if (timeLeft === 10) {
         document.body.style.background = "linear-gradient(135deg, #8B5CF6 0%, #D946EF 100%)";
         document.body.style.transition = "background 0.5s ease-in-out";
       }
       
-      // Reset background when timer ends or component unmounts
       if (timeLeft === 0) {
         document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
       }
@@ -97,7 +93,6 @@ export default function Index() {
     setSelectedAnswer(null);
     setIsCorrect(null);
 
-    // Generate options based on the question part
     let correctAnswer: number;
     if (allowedQuestionParts.length > 0) {
       const randomPart = allowedQuestionParts[Math.floor(Math.random() * allowedQuestionParts.length)];
