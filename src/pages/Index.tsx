@@ -357,7 +357,7 @@ export default function Index() {
                       onClick={() => handleOptionClick(option)}
                       disabled={isCorrect !== null}
                       variant="outline"
-                      className={`text-2xl font-bold aspect-square min-h-[60px] md:min-h-[80px] ${
+                      className={`text-2xl font-bold aspect-square min-h-[60px] md:min-h-[80px] select-none active:scale-95 touch-manipulation ${
                         selectedAnswer === option
                           ? isCorrect === true
                             ? "bg-green-500 hover:bg-green-600"
