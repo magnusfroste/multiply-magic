@@ -8,14 +8,20 @@ interface SpaceShipProps {
 
 export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
   const shipRef = useRef<HTMLDivElement>(null);
+  const baseY = 0; // Base vertical position
 
   useEffect(() => {
     if (!shipRef.current) return;
     
+    // Get the current horizontal position from the ongoing animation
+    const currentX = shipRef.current.style.transform.match(/translateX\((.*?)\)/)?.[1] || '0px';
+    
     if (isCorrect === true) {
-      shipRef.current.style.transform = `translateY(-20px)`;
+      shipRef.current.style.transform = `translateX(${currentX}) translateY(-20px)`;
     } else if (isCorrect === false) {
-      shipRef.current.style.transform = `translateY(20px)`;
+      shipRef.current.style.transform = `translateX(${currentX}) translateY(20px)`;
+    } else {
+      shipRef.current.style.transform = `translateX(${currentX}) translateY(${baseY}px)`;
     }
   }, [isCorrect]);
 
@@ -53,8 +59,8 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
         `}
         style={{
           filter: `brightness(${1 + score * 0.1})`,
-          transform: 'translateX(0)',
-          animation: isGameActive ? 'moveRight 120s linear' : 'none'
+          transform: `translateX(0) translateY(${baseY}px)`,
+          animation: isGameActive ? 'moveRight 120s linear forwards' : 'none'
         }}
       >
         <div className="relative w-full h-full">
