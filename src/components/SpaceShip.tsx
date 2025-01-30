@@ -10,8 +10,8 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
   const shipRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number>();
   const startTimeRef = useRef<number>();
-  const baseY = 0;
-  const maxY = 160; // Maximum downward position (80% of container height)
+  const baseY = 100; // Starting position (middle of container)
+  const maxY = 160; // Maximum downward position
   const fallDuration = 5000; // 5 seconds to fall
 
   useEffect(() => {
@@ -25,14 +25,14 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
       const elapsed = timestamp - startTimeRef.current;
       const progress = Math.min(elapsed / fallDuration, 1);
       
-      // Quadratic easing for more natural falling motion
-      const currentY = progress * progress * maxY;
+      // Calculate vertical position with quadratic easing
+      const currentY = baseY + (progress * progress * (maxY - baseY));
       
       if (shipRef.current) {
         shipRef.current.style.transform = `translateY(${currentY}px)`;
       }
 
-      if (progress < 1) {
+      if (progress < 1 && isGameActive) {
         animationFrameRef.current = requestAnimationFrame(applyGravity);
       }
     };
@@ -57,16 +57,39 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
     startTimeRef.current = undefined;
     
     if (isCorrect === true) {
-      shipRef.current.style.transform = `translateY(-20px)`;
+      // Move ship up for correct answer
+      shipRef.current.style.transform = `translateY(${baseY - 50}px)`;
       shipRef.current.style.transition = 'transform 0.5s ease-out';
+      
+      // After the lift animation, resume gravity
+      setTimeout(() => {
+        startTimeRef.current = undefined;
+        if (isGameActive) {
+          animationFrameRef.current = requestAnimationFrame((timestamp) => {
+            startTimeRef.current = timestamp;
+            const applyGravity = (t: number) => {
+              const elapsed = t - timestamp;
+              const progress = Math.min(elapsed / fallDuration, 1);
+              const currentY = (baseY - 50) + (progress * progress * (maxY - (baseY - 50)));
+              
+              if (shipRef.current) {
+                shipRef.current.style.transform = `translateY(${currentY}px)`;
+              }
+
+              if (progress < 1 && isGameActive) {
+                animationFrameRef.current = requestAnimationFrame(applyGravity);
+              }
+            };
+            animationFrameRef.current = requestAnimationFrame(applyGravity);
+          });
+        }
+      }, 500);
     } else if (isCorrect === false) {
-      shipRef.current.style.transform = `translateY(20px)`;
-      shipRef.current.style.transition = 'transform 0.5s ease-out';
-    } else {
-      shipRef.current.style.transform = `translateY(${baseY}px)`;
-      shipRef.current.style.transition = 'transform 0.5s ease-out';
+      // Drop ship quickly for wrong answer
+      shipRef.current.style.transform = `translateY(${maxY}px)`;
+      shipRef.current.style.transition = 'transform 0.3s ease-in';
     }
-  }, [isCorrect]);
+  }, [isCorrect, isGameActive]);
 
   if (!isGameActive) return null;
 
@@ -95,14 +118,13 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
       <div 
         ref={shipRef}
         className={`
-          absolute top-1/2 -translate-y-1/2 left-0 w-20 h-20 
+          absolute left-0 w-20 h-20 
           ${isGameActive ? 'animate-moveRight' : ''}
           ${isCorrect === true ? 'animate-celebrate' : ''}
         `}
         style={{
           filter: `brightness(${1 + score * 0.1})`,
           animation: isGameActive ? 'moveRight 120s linear forwards' : 'none',
-          transition: 'transform 0.5s ease-out'
         }}
       >
         <div className="relative w-full h-full">
