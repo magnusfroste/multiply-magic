@@ -52,7 +52,7 @@ export default function Index() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isGameActive && timeLeft > 0) {
+    if (isGameActive && timeLeft > 0 && !isTrainingMode) { // Added !isTrainingMode check
       timer = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
@@ -78,7 +78,7 @@ export default function Index() {
       clearInterval(timer);
       document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
     };
-  }, [isGameActive, timeLeft]);
+  }, [isGameActive, timeLeft, isTrainingMode]);
 
   const generateQuestion = () => {
     if (!isGameActive) return;
@@ -214,14 +214,16 @@ export default function Index() {
         <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-white">Space Math!</h1>
           <div className="flex items-center gap-4">
-            <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-3 rounded-lg ${
-              timeLeft <= 10 ? 'animate-pulse bg-pink-500/20' : ''
-            }`}>
-              <Timer className="w-6 h-6" />
-              <span className="text-2xl font-bold font-mono">
-                {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-              </span>
-            </div>
+            {!isTrainingMode && ( // Only show timer in test mode
+              <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-3 rounded-lg ${
+                timeLeft <= 10 ? 'animate-pulse bg-pink-500/20' : ''
+              }`}>
+                <Timer className="w-6 h-6" />
+                <span className="text-2xl font-bold font-mono">
+                  {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                </span>
+              </div>
+            )}
             <ScoreDisplay score={score} highScore={highScore} />
             <Button
               variant="outline"
