@@ -208,6 +208,38 @@ export default function Index() {
     generateQuestion();
   }, []);
 
+  const getSuccessMessage = () => {
+    const messages = [
+      { text: "Fantastic job! You're getting better every day!", icon: "🌟" },
+      { text: "Excellent work! Keep shining bright!", icon: "⭐" },
+      { text: "Amazing! You're becoming a math champion!", icon: "🏆" },
+      { text: "Wonderful! Your brain is growing stronger!", icon: "🧠" },
+      { text: "Spectacular! You're on fire today!", icon: "🔥" },
+      { text: "Brilliant! You make math look easy!", icon: "✨" },
+      { text: "Incredible! You're a math superstar!", icon: "🌈" },
+      { text: "Outstanding! Keep up the great work!", icon: "🎯" },
+      { text: "Superb! Your hard work is paying off!", icon: "🎨" },
+      { text: "Perfect! You're unstoppable!", icon: "🚀" }
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+  };
+
+  const getEncouragementMessage = () => {
+    const messages = [
+      { text: "Don't worry! Let's try again together!", icon: "🤗" },
+      { text: "You're getting closer! Keep trying!", icon: "👊" },
+      { text: "Almost there! You can do this!", icon: "💪" },
+      { text: "Practice makes perfect! Let's continue!", icon: "🌱" },
+      { text: "Keep going! Every attempt makes you stronger!", icon: "🎯" },
+      { text: "You're learning! That's what matters!", icon: "📚" },
+      { text: "Mistakes help us learn! Try once more!", icon: "🌈" },
+      { text: "Stay positive! You'll get it next time!", icon: "☀️" },
+      { text: "You're brave to keep trying! Let's go again!", icon: "🦁" },
+      { text: "Never give up! You're getting better!", icon: "🌟" }
+    ];
+    return messages[Math.floor(Math.random() * messages.length)];
+  };
+
   return (
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
       <div className="w-full max-w-lg">
@@ -380,16 +412,20 @@ export default function Index() {
                 </div>
 
                 {isCorrect !== null && (
-                  <div className={`flex items-center justify-center gap-2 text-xl font-bold ${isCorrect ? "text-green-400" : "text-red-400"}`}>
+                  <div className={`flex items-center justify-center gap-2 text-xl font-bold ${isCorrect ? "text-green-400" : "text-amber-400"}`}>
                     {isCorrect ? (
                       <>
                         <Smile className="w-6 h-6" />
-                        <span>Great job!</span>
+                        <span className="animate-bounce">
+                          {getSuccessMessage().icon} {getSuccessMessage().text}
+                        </span>
                       </>
                     ) : (
                       <>
                         <Frown className="w-6 h-6" />
-                        <span>Keep trying!</span>
+                        <span>
+                          {getEncouragementMessage().icon} {getEncouragementMessage().text}
+                        </span>
                       </>
                     )}
                   </div>
