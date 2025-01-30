@@ -3,7 +3,7 @@ import { GameCard } from "@/components/GameCard";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Star, Frown, Smile, RotateCcw, Settings2, Brain, Swords } from "lucide-react";
+import { Star, Frown, Smile, RotateCcw, Settings2, Brain, Swords, Timer } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TrainingMode } from "@/components/TrainingMode";
 import {
@@ -29,6 +29,8 @@ export default function Index() {
   const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
   const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["result"]);
   const [options, setOptions] = useState<number[]>([]);
+  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
+  const [isGameActive, setIsGameActive] = useState(true);
   const { toast } = useToast();
 
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -50,7 +52,30 @@ export default function Index() {
     return Array.from(options).sort((a, b) => a - b);
   };
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isGameActive && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            setIsGameActive(false);
+            toast({
+              title: "Time's up!",
+              description: `Final score: ${score}`,
+              duration: 3000,
+            });
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isGameActive, timeLeft, score, toast]);
+
   const generateQuestion = () => {
+    if (!isGameActive) return;
+    
     if (selectedTables.length === 0) {
       toast({
         title: "No tables selected",
@@ -95,7 +120,7 @@ export default function Index() {
   };
 
   const checkAnswer = () => {
-    if (selectedAnswer === null) return;
+    if (selectedAnswer === null || !isGameActive) return;
 
     let correctAnswer: number;
     switch (questionPart) {
@@ -112,13 +137,7 @@ export default function Index() {
         correctAnswer = num1 * num2;
     }
 
-    console.log('Question part:', questionPart);
-    console.log('Correct answer:', correctAnswer);
-    console.log('User answer:', selectedAnswer);
-    
     const isAnswerCorrect = selectedAnswer === correctAnswer;
-    console.log('Is correct?', isAnswerCorrect);
-    
     setIsCorrect(isAnswerCorrect);
 
     if (isAnswerCorrect) {
@@ -133,6 +152,9 @@ export default function Index() {
       });
       setTimeout(generateQuestion, 1500);
     } else {
+      // Deduct point for wrong answer, but don't go below 0
+      setScore((prev) => Math.max(0, prev - 1));
+      
       let errorMessage = "";
       switch (questionPart) {
         case "first":
@@ -147,12 +169,26 @@ export default function Index() {
       }
       
       toast({
-        title: "Not quite right",
+        title: "Not quite right (-1 point)",
         description: `${errorMessage}. Let's try another one!`,
         duration: 2000,
       });
       setTimeout(generateQuestion, 2000);
     }
+  };
+
+  const startOver = () => {
+    setScore(0);
+    setSelectedAnswer(null);
+    setIsCorrect(null);
+    setTimeLeft(120);
+    setIsGameActive(true);
+    generateQuestion();
+    toast({
+      title: "Game Reset!",
+      description: "Let's start a new game!",
+      duration: 2000,
+    });
   };
 
   const handleOptionClick = (value: number) => {
@@ -203,18 +239,6 @@ export default function Index() {
     });
   };
 
-  const startOver = () => {
-    setScore(0);
-    setSelectedAnswer(null);
-    setIsCorrect(null);
-    generateQuestion();
-    toast({
-      title: "Game Reset!",
-      description: "Let's start a new game!",
-      duration: 2000,
-    });
-  };
-
   useEffect(() => {
     generateQuestion();
   }, []);
@@ -225,6 +249,10 @@ export default function Index() {
         <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-white">Space Math!</h1>
           <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-white">
+              <Timer className="w-5 h-5" />
+              <span>{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+            </div>
             <ScoreDisplay score={score} highScore={highScore} />
             <Button
               variant="outline"
@@ -324,8 +352,16 @@ export default function Index() {
           </div>
         </div>
 
-        {isTrainingMode ? (
-          <TrainingMode selectedTable={selectedTrainingTable} />
+        {!isGameActive ? (
+          <GameCard className="mb-6">
+            <div className="text-center p-6">
+              <h2 className="text-2xl font-bold text-white mb-4">Time's Up!</h2>
+              <p className="text-white mb-4">Final Score: {score}</p>
+              <Button onClick={startOver} className="bg-game-primary hover:bg-game-primary/80">
+                Play Again
+              </Button>
+            </div>
+          </GameCard>
         ) : (
           <>
             <GameCard className="mb-6 animate-float">
