@@ -69,8 +69,22 @@ export default function Index() {
           return prev - 1;
         });
       }, 1000);
+
+      // Add background color transition when 10 seconds remain
+      if (timeLeft === 10) {
+        document.body.style.background = "linear-gradient(135deg, #8B5CF6 0%, #D946EF 100%)";
+        document.body.style.transition = "background 0.5s ease-in-out";
+      }
+      
+      // Reset background when timer ends or component unmounts
+      if (timeLeft === 0) {
+        document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
+      }
     }
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
+    };
   }, [isGameActive, timeLeft, score, toast]);
 
   const generateQuestion = () => {
@@ -248,9 +262,13 @@ export default function Index() {
         <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-white">Space Math!</h1>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-white">
-              <Timer className="w-5 h-5" />
-              <span>{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+            <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-3 rounded-lg ${
+              timeLeft <= 10 ? 'animate-pulse bg-pink-500/20' : ''
+            }`}>
+              <Timer className="w-6 h-6" />
+              <span className="text-2xl font-bold font-mono">
+                {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+              </span>
             </div>
             <ScoreDisplay score={score} highScore={highScore} />
             <Button
