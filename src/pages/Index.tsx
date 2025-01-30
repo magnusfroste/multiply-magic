@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Star, Frown, Smile, RotateCcw, Settings2, Brain, Swords, Timer } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TrainingMode } from "@/components/TrainingMode";
+import { SpaceShip } from "@/components/SpaceShip";
 import {
   Sheet,
   SheetContent,
@@ -242,6 +243,11 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
+      <SpaceShip 
+        isCorrect={isCorrect}
+        isGameActive={isGameActive}
+        score={score}
+      />
       <div className="w-full max-w-lg">
         <div className="mb-8 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-white">Space Math!</h1>

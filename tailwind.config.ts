@@ -83,6 +83,10 @@ export default {
           "50%": { transform: "scale(1.1)" },
           "100%": { transform: "scale(1)" },
         },
+        moveRight: {
+          "0%": { transform: "translateX(-100px)" },
+          "100%": { transform: "translateX(calc(100vw + 100px))" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
