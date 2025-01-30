@@ -23,9 +23,7 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
     // Set up gravity effect
     gravityRef.current = setTimeout(() => {
       if (shipRef.current) {
-        const currentTransform = shipRef.current.style.transform;
-        const currentX = currentTransform.match(/translateX\((.*?)\)/)?.[1] || '0px';
-        shipRef.current.style.transform = `translateX(${currentX}) translateY(${maxY}px)`;
+        shipRef.current.style.transform = `translateY(${maxY}px)`;
         shipRef.current.style.transition = 'transform 1s ease-in';
       }
     }, 5000);
@@ -40,22 +38,19 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
   useEffect(() => {
     if (!shipRef.current) return;
     
-    const currentTransform = shipRef.current.style.transform;
-    const currentX = currentTransform.match(/translateX\((.*?)\)/)?.[1] || '0px';
-    
     // Reset gravity timer when answer is given
     if (gravityRef.current) {
       clearTimeout(gravityRef.current);
     }
     
     if (isCorrect === true) {
-      shipRef.current.style.transform = `translateX(${currentX}) translateY(-20px)`;
+      shipRef.current.style.transform = `translateY(-20px)`;
       shipRef.current.style.transition = 'transform 0.5s ease-out';
     } else if (isCorrect === false) {
-      shipRef.current.style.transform = `translateX(${currentX}) translateY(20px)`;
+      shipRef.current.style.transform = `translateY(20px)`;
       shipRef.current.style.transition = 'transform 0.5s ease-out';
     } else {
-      shipRef.current.style.transform = `translateX(${currentX}) translateY(${baseY}px)`;
+      shipRef.current.style.transform = `translateY(${baseY}px)`;
       shipRef.current.style.transition = 'transform 0.5s ease-out';
     }
   }, [isCorrect]);
@@ -93,7 +88,6 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
         `}
         style={{
           filter: `brightness(${1 + score * 0.1})`,
-          transform: `translateX(0) translateY(${baseY}px)`,
           animation: isGameActive ? 'moveRight 120s linear forwards' : 'none',
           transition: 'transform 0.5s ease-out'
         }}
