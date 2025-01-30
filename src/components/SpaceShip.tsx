@@ -47,12 +47,14 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
         ref={shipRef}
         className={`
           absolute top-1/2 -translate-y-1/2 left-0 w-20 h-20 
-          transition-all duration-500 ease-in-out
-          animate-moveRight
+          transition-transform duration-500 ease-in-out
+          ${isGameActive ? 'animate-moveRight' : ''}
           ${isCorrect === true ? 'animate-celebrate' : ''}
         `}
         style={{
           filter: `brightness(${1 + score * 0.1})`,
+          transform: 'translateX(0)',
+          animation: isGameActive ? 'moveRight 120s linear' : 'none'
         }}
       >
         <div className="relative w-full h-full">
