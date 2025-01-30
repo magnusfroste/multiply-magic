@@ -1,17 +1,10 @@
 import { useState, useEffect } from "react";
 import { GameCard } from "@/components/GameCard";
-import { ScoreDisplay } from "@/components/ScoreDisplay";
-import { Button } from "@/components/ui/button";
-import { Star, Frown, Smile, RotateCcw, Settings2, Brain, Swords, Timer } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Star } from "lucide-react";
 import { TrainingMode } from "@/components/TrainingMode";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { GameHeader } from "@/components/GameHeader";
+import { GameQuestion } from "@/components/GameQuestion";
+import { GameOver } from "@/components/GameOver";
 
 type QuestionPart = "first" | "second" | "result";
 
@@ -241,195 +234,42 @@ export default function Index() {
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
       <div className="w-full max-w-4xl">
         <div className="w-full max-w-lg mx-auto">
-          <div className="mb-8 flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-white">Space Math!</h1>
-            <div className="flex items-center gap-4">
-              {!isTrainingMode && (
-                <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-3 rounded-lg ${
-                  timeLeft <= 10 ? 'animate-pulse bg-pink-500/20' : ''
-                }`}>
-                  <Timer className="w-6 h-6" />
-                  <span className="text-2xl font-bold font-mono">
-                    {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-                  </span>
-                </div>
-              )}
-              <ScoreDisplay score={score} highScore={highScore} />
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setIsTrainingMode(!isTrainingMode)}
-                className="bg-transparent border-white text-white hover:bg-white/20"
-                title={isTrainingMode ? "Switch to Test Mode" : "Switch to Training Mode"}
-              >
-                {isTrainingMode ? <Swords className="w-4 h-4" /> : <Brain className="w-4 h-4" />}
-              </Button>
-              <Button 
-                variant="outline" 
-                size="icon"
-                onClick={startOver}
-                className="bg-transparent border-white text-white hover:bg-white/20"
-                title="Start Over"
-              >
-                <RotateCcw className="w-4 h-4" />
-              </Button>
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="bg-transparent border-white text-white hover:bg-white/20"
-                    title="Settings"
-                  >
-                    <Settings2 className="w-4 h-4" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>
-                      {isTrainingMode ? "Select Training Table" : "Parent Settings"}
-                    </SheetTitle>
-                  </SheetHeader>
-                  <div className="py-4">
-                    <h3 className="mb-4 text-sm font-medium">
-                      {isTrainingMode ? "Select a table to practice:" : "Select Multiplication Tables:"}
-                    </h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      {allTables.map((table) => (
-                        <div key={table} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`table-${table}`}
-                            checked={isTrainingMode ? selectedTrainingTable === table : selectedTables.includes(table)}
-                            onCheckedChange={() => handleTableToggle(table)}
-                            disabled={!isTrainingMode && selectedTables.length === 1 && selectedTables.includes(table)}
-                          />
-                          <label
-                            htmlFor={`table-${table}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            {table}x Table
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-
-                    {!isTrainingMode && (
-                      <div className="mt-8">
-                        <h3 className="mb-4 text-sm font-medium">Question Types:</h3>
-                        <div className="space-y-4">
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="first-number"
-                              checked={allowedQuestionParts.includes("first")}
-                              onCheckedChange={() => handleQuestionPartToggle("first")}
-                              disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("first")}
-                            />
-                            <label htmlFor="first-number">Hide First Number</label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="second-number"
-                              checked={allowedQuestionParts.includes("second")}
-                              onCheckedChange={() => handleQuestionPartToggle("second")}
-                              disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("second")}
-                            />
-                            <label htmlFor="second-number">Hide Second Number</label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id="result"
-                              checked={allowedQuestionParts.includes("result")}
-                              onCheckedChange={() => handleQuestionPartToggle("result")}
-                              disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("result")}
-                            />
-                            <label htmlFor="result">Hide Result</label>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
-          </div>
+          <GameHeader
+            score={score}
+            highScore={highScore}
+            timeLeft={timeLeft}
+            isTrainingMode={isTrainingMode}
+            onTrainingModeToggle={() => setIsTrainingMode(!isTrainingMode)}
+            onStartOver={startOver}
+            selectedTables={selectedTables}
+            onTableToggle={handleTableToggle}
+            selectedTrainingTable={selectedTrainingTable}
+            allowedQuestionParts={allowedQuestionParts}
+            onQuestionPartToggle={handleQuestionPartToggle}
+          />
 
           {!isGameActive ? (
-            <GameCard className="mb-6">
-              <div className="text-center p-6">
-                <h2 className="text-2xl font-bold text-white mb-4">Time's Up!</h2>
-                <p className="text-white mb-4">Final Score: {score}</p>
-                <Button onClick={startOver} className="bg-game-primary hover:bg-game-primary/80">
-                  Play Again
-                </Button>
-              </div>
-            </GameCard>
+            <GameOver score={score} onStartOver={startOver} />
           ) : (
             <>
-              <GameCard className="mb-6 animate-float">
-                <div className="text-center">
-                  <div className="text-4xl font-bold mb-6 text-white flex items-center justify-center gap-4">
-                    {questionPart === "first" ? (
-                      <span className="w-24">?</span>
-                    ) : (
-                      <span>{num1}</span>
-                    )}
-                    <span>×</span>
-                    {questionPart === "second" ? (
-                      <span className="w-24">?</span>
-                    ) : (
-                      <span>{num2}</span>
-                    )}
-                    <span>=</span>
-                    {questionPart === "result" ? (
-                      <span className="w-24">?</span>
-                    ) : (
-                      <span>{num1 * num2}</span>
-                    )}
-                  </div>
-                  
-                  <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mb-4">
-                    {options.map((option) => (
-                      <Button
-                        key={option}
-                        onClick={() => handleOptionClick(option)}
-                        disabled={isCorrect !== null}
-                        variant="outline"
-                        className={`text-2xl font-bold aspect-square min-h-[60px] md:min-h-[80px] select-none active:scale-95 touch-manipulation ${
-                          selectedAnswer === option
-                            ? isCorrect === true
-                              ? "bg-green-500 hover:bg-green-600"
-                              : isCorrect === false
-                              ? "bg-red-500 hover:bg-red-600"
-                              : "bg-white/20"
-                            : "bg-white/20"
-                        } hover:bg-white/30 text-white`}
-                      >
-                        {option}
-                      </Button>
-                    ))}
-                  </div>
-
-                  {isCorrect !== null && (
-                    <div className={`flex items-center justify-center gap-2 text-xl font-bold ${isCorrect ? "text-green-400" : "text-amber-400"}`}>
-                      {isCorrect ? (
-                        <>
-                          <Smile className="w-6 h-6" />
-                          <span className="animate-bounce">
-                            {getSuccessMessage().icon} {getSuccessMessage().text}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <Frown className="w-6 h-6" />
-                          <span>
-                            {getEncouragementMessage().icon} {getEncouragementMessage().text}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </GameCard>
+              {isTrainingMode ? (
+                <TrainingMode selectedTable={selectedTrainingTable} />
+              ) : (
+                <GameCard className="mb-6 animate-float">
+                  <GameQuestion
+                    num1={num1}
+                    num2={num2}
+                    questionPart={questionPart}
+                    options={options}
+                    isCorrect={isCorrect}
+                    selectedAnswer={selectedAnswer}
+                    isGameActive={isGameActive}
+                    onOptionClick={handleOptionClick}
+                    getSuccessMessage={getSuccessMessage}
+                    getEncouragementMessage={getEncouragementMessage}
+                  />
+                </GameCard>
+              )}
 
               <div className="flex justify-center gap-2">
                 {[...Array(score)].map((_, i) => (
