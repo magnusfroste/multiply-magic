@@ -48,7 +48,7 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
         className={`
           absolute top-1/2 -translate-y-1/2 left-0 w-20 h-20 
           transition-all duration-500 ease-in-out
-          animate-[moveRight_120s_linear]
+          animate-moveRight
           ${isCorrect === true ? 'animate-celebrate' : ''}
         `}
         style={{
