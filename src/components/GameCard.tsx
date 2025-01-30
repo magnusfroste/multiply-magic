@@ -8,7 +8,7 @@ interface GameCardProps {
 
 export function GameCard({ children, className }: GameCardProps) {
   return (
-    <Card className={cn("p-6 bg-white/10 backdrop-blur-lg border-2 border-white/20 shadow-xl", className)}>
+    <Card className={cn("p-6 min-h-[300px] bg-white/10 backdrop-blur-lg border-2 border-white/20 shadow-xl", className)}>
       {children}
     </Card>
   );
