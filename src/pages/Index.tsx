@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Star, Frown, Smile, RotateCcw, Settings2, Brain, Swords, Timer } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TrainingMode } from "@/components/TrainingMode";
+import { useToast } from "@/hooks/use-toast";
 import {
   Sheet,
   SheetContent,
@@ -16,6 +17,7 @@ import {
 type QuestionPart = "first" | "second" | "result";
 
 export default function Index() {
+  const { toast } = useToast();
   const [num1, setNum1] = useState(1);
   const [num2, setNum2] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -144,12 +146,25 @@ export default function Index() {
     setIsCorrect(isAnswerCorrect);
 
     if (isAnswerCorrect) {
+      const successMessage = getSuccessMessage();
+      toast({
+        title: successMessage.icon,
+        description: successMessage.text,
+        duration: 2000,
+      });
       setScore(score + 1);
       if (score + 1 > highScore) {
         setHighScore(score + 1);
       }
       setTimeout(generateQuestion, 1500);
     } else {
+      const encouragementMessage = getEncouragementMessage();
+      toast({
+        title: encouragementMessage.icon,
+        description: encouragementMessage.text,
+        duration: 2000,
+        variant: "destructive",
+      });
       setScore((prev) => Math.max(0, prev - 1));
       setTimeout(generateQuestion, 2000);
     }
@@ -411,26 +426,6 @@ export default function Index() {
                       </Button>
                     ))}
                   </div>
-
-                  {isCorrect !== null && (
-                    <div className={`flex items-center justify-center gap-2 text-xl font-bold ${isCorrect ? "text-green-400" : "text-amber-400"}`}>
-                      {isCorrect ? (
-                        <>
-                          <Smile className="w-6 h-6" />
-                          <span className="animate-bounce">
-                            {getSuccessMessage().icon} {getSuccessMessage().text}
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <Frown className="w-6 h-6" />
-                          <span>
-                            {getEncouragementMessage().icon} {getEncouragementMessage().text}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  )}
                 </div>
               </GameCard>
 
