@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { GameCard } from "@/components/GameCard";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { Star, Frown, Smile, RotateCcw, Settings2, Brain, Swords, Timer } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TrainingMode } from "@/components/TrainingMode";
@@ -31,7 +30,6 @@ export default function Index() {
   const [options, setOptions] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
   const [isGameActive, setIsGameActive] = useState(true);
-  const { toast } = useToast();
 
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -59,11 +57,6 @@ export default function Index() {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             setIsGameActive(false);
-            toast({
-              title: "Time's up!",
-              description: `Final score: ${score}`,
-              duration: 3000,
-            });
             return 0;
           }
           return prev - 1;
@@ -85,17 +78,13 @@ export default function Index() {
       clearInterval(timer);
       document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
     };
-  }, [isGameActive, timeLeft, score, toast]);
+  }, [isGameActive, timeLeft]);
 
   const generateQuestion = () => {
     if (!isGameActive) return;
     
     if (selectedTables.length === 0) {
-      toast({
-        title: "No tables selected",
-        description: "Please select at least one multiplication table in settings.",
-        duration: 3000,
-      });
+      console.warn("No tables selected");
       return;
     }
 
@@ -159,33 +148,9 @@ export default function Index() {
       if (score + 1 > highScore) {
         setHighScore(score + 1);
       }
-      toast({
-        title: "Correct! 🎉",
-        description: "Keep up the great work!",
-        duration: 1500,
-      });
       setTimeout(generateQuestion, 1500);
     } else {
       setScore((prev) => Math.max(0, prev - 1));
-      
-      let errorMessage = "";
-      switch (questionPart) {
-        case "first":
-          errorMessage = `The first number should be ${num1}`;
-          break;
-        case "second":
-          errorMessage = `The second number should be ${num2}`;
-          break;
-        case "result":
-          errorMessage = `${num1} × ${num2} = ${num1 * num2}`;
-          break;
-      }
-      
-      toast({
-        title: "Not quite right (-1 point)",
-        description: `${errorMessage}. Let's try another one!`,
-        duration: 2000,
-      });
       setTimeout(generateQuestion, 2000);
     }
   };
@@ -193,7 +158,7 @@ export default function Index() {
   const handleOptionClick = (value: number) => {
     if (isCorrect !== null || !isGameActive) return;
     setSelectedAnswer(value);
-    checkAnswer(value); // Directly call checkAnswer with the value
+    checkAnswer(value);
   };
 
   const startOver = () => {
@@ -203,11 +168,6 @@ export default function Index() {
     setTimeLeft(120);
     setIsGameActive(true);
     generateQuestion();
-    toast({
-      title: "Game Reset!",
-      description: "Let's start a new game!",
-      duration: 2000,
-    });
   };
 
   const handleTableToggle = (table: number) => {
@@ -223,11 +183,7 @@ export default function Index() {
         : [...current, table].sort((a, b) => a - b);
       
       if (updated.length === 0) {
-        toast({
-          title: "Warning",
-          description: "You must keep at least one table selected",
-          duration: 3000,
-        });
+        console.warn("You must keep at least one table selected");
         return current;
       }
       return updated;
@@ -241,11 +197,7 @@ export default function Index() {
         : [...current, part];
       
       if (updated.length === 0) {
-        toast({
-          title: "Warning",
-          description: "You must keep at least one question type selected",
-          duration: 3000,
-        });
+        console.warn("You must keep at least one question type selected");
         return current;
       }
       return updated;
