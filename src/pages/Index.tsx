@@ -119,8 +119,8 @@ export default function Index() {
     setOptions(newOptions);
   };
 
-  const checkAnswer = () => {
-    if (selectedAnswer === null || !isGameActive) return;
+  const checkAnswer = (selectedValue: number) => {
+    if (!isGameActive) return;
 
     let correctAnswer: number;
     switch (questionPart) {
@@ -137,7 +137,7 @@ export default function Index() {
         correctAnswer = num1 * num2;
     }
 
-    const isAnswerCorrect = selectedAnswer === correctAnswer;
+    const isAnswerCorrect = selectedValue === correctAnswer;
     setIsCorrect(isAnswerCorrect);
 
     if (isAnswerCorrect) {
@@ -152,7 +152,6 @@ export default function Index() {
       });
       setTimeout(generateQuestion, 1500);
     } else {
-      // Deduct point for wrong answer, but don't go below 0
       setScore((prev) => Math.max(0, prev - 1));
       
       let errorMessage = "";
@@ -177,6 +176,12 @@ export default function Index() {
     }
   };
 
+  const handleOptionClick = (value: number) => {
+    if (isCorrect !== null || !isGameActive) return;
+    setSelectedAnswer(value);
+    checkAnswer(value); // Directly call checkAnswer with the value
+  };
+
   const startOver = () => {
     setScore(0);
     setSelectedAnswer(null);
@@ -189,12 +194,6 @@ export default function Index() {
       description: "Let's start a new game!",
       duration: 2000,
     });
-  };
-
-  const handleOptionClick = (value: number) => {
-    if (isCorrect !== null) return;
-    setSelectedAnswer(value);
-    setTimeout(checkAnswer, 100);
   };
 
   const handleTableToggle = (table: number) => {
