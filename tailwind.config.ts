@@ -93,7 +93,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         float: "float 3s ease-in-out infinite",
         celebrate: "celebrate 0.5s ease-in-out",
-        moveRight: "moveRight 120s linear",
+        moveRight: "moveRight 120s linear infinite",
       },
     },
   },
