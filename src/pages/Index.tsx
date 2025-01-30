@@ -350,14 +350,14 @@ export default function Index() {
                   )}
                 </div>
                 
-                <div className="grid grid-cols-5 gap-2 mb-4">
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mb-4">
                   {options.map((option) => (
                     <Button
                       key={option}
                       onClick={() => handleOptionClick(option)}
                       disabled={isCorrect !== null}
                       variant="outline"
-                      className={`text-xl font-bold ${
+                      className={`text-2xl font-bold aspect-square min-h-[60px] md:min-h-[80px] ${
                         selectedAnswer === option
                           ? isCorrect === true
                             ? "bg-green-500 hover:bg-green-600"
