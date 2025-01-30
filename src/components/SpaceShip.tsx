@@ -8,40 +8,53 @@ interface SpaceShipProps {
 
 export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
   const shipRef = useRef<HTMLDivElement>(null);
-  const gravityRef = useRef<NodeJS.Timeout>();
+  const animationFrameRef = useRef<number>();
+  const startTimeRef = useRef<number>();
   const baseY = 0;
   const maxY = 160; // Maximum downward position (80% of container height)
+  const fallDuration = 5000; // 5 seconds to fall
 
   useEffect(() => {
     if (!shipRef.current || !isGameActive) return;
 
-    // Clear any existing gravity timer
-    if (gravityRef.current) {
-      clearTimeout(gravityRef.current);
-    }
-
-    // Set up gravity effect
-    gravityRef.current = setTimeout(() => {
-      if (shipRef.current) {
-        shipRef.current.style.transform = `translateY(${maxY}px)`;
-        shipRef.current.style.transition = 'transform 1s ease-in';
+    const applyGravity = (timestamp: number) => {
+      if (!startTimeRef.current) {
+        startTimeRef.current = timestamp;
       }
-    }, 5000);
 
-    return () => {
-      if (gravityRef.current) {
-        clearTimeout(gravityRef.current);
+      const elapsed = timestamp - startTimeRef.current;
+      const progress = Math.min(elapsed / fallDuration, 1);
+      
+      // Quadratic easing for more natural falling motion
+      const currentY = progress * progress * maxY;
+      
+      if (shipRef.current) {
+        shipRef.current.style.transform = `translateY(${currentY}px)`;
+      }
+
+      if (progress < 1) {
+        animationFrameRef.current = requestAnimationFrame(applyGravity);
       }
     };
-  }, [isGameActive, isCorrect]);
+
+    // Start gravity animation
+    animationFrameRef.current = requestAnimationFrame(applyGravity);
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [isGameActive]);
 
   useEffect(() => {
     if (!shipRef.current) return;
     
-    // Reset gravity timer when answer is given
-    if (gravityRef.current) {
-      clearTimeout(gravityRef.current);
+    // Reset gravity animation when answer is given
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
     }
+    startTimeRef.current = undefined;
     
     if (isCorrect === true) {
       shipRef.current.style.transform = `translateY(-20px)`;
