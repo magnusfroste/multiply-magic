@@ -8,20 +8,55 @@ interface SpaceShipProps {
 
 export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
   const shipRef = useRef<HTMLDivElement>(null);
-  const baseY = 0; // Base vertical position
+  const gravityRef = useRef<NodeJS.Timeout>();
+  const baseY = 0;
+  const maxY = 160; // Maximum downward position (80% of container height)
+
+  useEffect(() => {
+    if (!shipRef.current || !isGameActive) return;
+
+    // Clear any existing gravity timer
+    if (gravityRef.current) {
+      clearTimeout(gravityRef.current);
+    }
+
+    // Set up gravity effect
+    gravityRef.current = setTimeout(() => {
+      if (shipRef.current) {
+        const currentTransform = shipRef.current.style.transform;
+        const currentX = currentTransform.match(/translateX\((.*?)\)/)?.[1] || '0px';
+        shipRef.current.style.transform = `translateX(${currentX}) translateY(${maxY}px)`;
+        shipRef.current.style.transition = 'transform 1s ease-in';
+      }
+    }, 5000);
+
+    return () => {
+      if (gravityRef.current) {
+        clearTimeout(gravityRef.current);
+      }
+    };
+  }, [isGameActive, isCorrect]);
 
   useEffect(() => {
     if (!shipRef.current) return;
     
-    // Get the current horizontal position from the ongoing animation
-    const currentX = shipRef.current.style.transform.match(/translateX\((.*?)\)/)?.[1] || '0px';
+    const currentTransform = shipRef.current.style.transform;
+    const currentX = currentTransform.match(/translateX\((.*?)\)/)?.[1] || '0px';
+    
+    // Reset gravity timer when answer is given
+    if (gravityRef.current) {
+      clearTimeout(gravityRef.current);
+    }
     
     if (isCorrect === true) {
       shipRef.current.style.transform = `translateX(${currentX}) translateY(-20px)`;
+      shipRef.current.style.transition = 'transform 0.5s ease-out';
     } else if (isCorrect === false) {
       shipRef.current.style.transform = `translateX(${currentX}) translateY(20px)`;
+      shipRef.current.style.transition = 'transform 0.5s ease-out';
     } else {
       shipRef.current.style.transform = `translateX(${currentX}) translateY(${baseY}px)`;
+      shipRef.current.style.transition = 'transform 0.5s ease-out';
     }
   }, [isCorrect]);
 
@@ -53,14 +88,14 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
         ref={shipRef}
         className={`
           absolute top-1/2 -translate-y-1/2 left-0 w-20 h-20 
-          transition-transform duration-500 ease-in-out
           ${isGameActive ? 'animate-moveRight' : ''}
           ${isCorrect === true ? 'animate-celebrate' : ''}
         `}
         style={{
           filter: `brightness(${1 + score * 0.1})`,
           transform: `translateX(0) translateY(${baseY}px)`,
-          animation: isGameActive ? 'moveRight 120s linear forwards' : 'none'
+          animation: isGameActive ? 'moveRight 120s linear forwards' : 'none',
+          transition: 'transform 0.5s ease-out'
         }}
       >
         <div className="relative w-full h-full">
