@@ -22,27 +22,49 @@ export function SpaceShip({ isCorrect, isGameActive, score }: SpaceShipProps) {
   if (!isGameActive) return null;
 
   return (
-    <div 
-      ref={shipRef}
-      className={`
-        fixed top-32 left-0 w-20 h-20 
-        transition-all duration-500 ease-in-out
-        animate-[moveRight_120s_linear]
-        ${isCorrect === true ? 'animate-celebrate' : ''}
-      `}
-      style={{
-        filter: `brightness(${1 + score * 0.1})`,
-      }}
-    >
-      <div className="relative w-full h-full">
-        {/* Spaceship body */}
-        <div className="absolute inset-0 bg-game-primary rounded-full transform rotate-45 animate-float">
-          {/* Cockpit */}
-          <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-game-accent rounded-full"></div>
-          {/* Engine flames */}
-          <div className="absolute -left-4 top-1/2 -translate-y-1/2">
-            <div className="w-6 h-2 bg-game-secondary rounded-full animate-pulse"></div>
-            <div className="w-4 h-2 bg-game-accent rounded-full animate-pulse delay-75"></div>
+    <div className="w-full h-[200px] relative mb-8 bg-game-background border-4 border-game-primary/30 rounded-lg overflow-hidden">
+      {/* Grid background */}
+      <div className="absolute inset-0" 
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '20px 20px'
+        }}>
+      </div>
+      
+      {/* Stars background */}
+      <div className="absolute inset-0" 
+        style={{
+          backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)`,
+          backgroundSize: '15px 15px'
+        }}>
+      </div>
+
+      {/* Spaceship */}
+      <div 
+        ref={shipRef}
+        className={`
+          absolute top-1/2 -translate-y-1/2 left-0 w-20 h-20 
+          transition-all duration-500 ease-in-out
+          animate-[moveRight_120s_linear]
+          ${isCorrect === true ? 'animate-celebrate' : ''}
+        `}
+        style={{
+          filter: `brightness(${1 + score * 0.1})`,
+        }}
+      >
+        <div className="relative w-full h-full">
+          {/* Spaceship body */}
+          <div className="absolute inset-0 bg-game-primary rounded-full transform rotate-45 animate-float">
+            {/* Cockpit */}
+            <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 bg-game-accent rounded-full"></div>
+            {/* Engine flames */}
+            <div className="absolute -left-4 top-1/2 -translate-y-1/2">
+              <div className="w-6 h-2 bg-game-secondary rounded-full animate-pulse"></div>
+              <div className="w-4 h-2 bg-game-accent rounded-full animate-pulse delay-75"></div>
+            </div>
           </div>
         </div>
       </div>
