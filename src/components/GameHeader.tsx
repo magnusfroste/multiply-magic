@@ -38,7 +38,7 @@ export function GameHeader({
   onQuestionPartToggle,
 }: GameHeaderProps) {
   return (
-    <div className="mb-8 flex justify-between items-center">
+    <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
       <h1 className="text-3xl font-bold text-white">Space Math!</h1>
       <div className="flex items-center gap-4">
         {!isTrainingMode && (
@@ -54,31 +54,31 @@ export function GameHeader({
         <ScoreDisplay score={score} highScore={highScore} />
         <Button
           variant="outline"
-          size="icon"
+          size="lg"
           onClick={onTrainingModeToggle}
-          className="bg-transparent border-white text-white hover:bg-white/20"
+          className="bg-transparent border-2 border-white text-white hover:bg-white/20 h-14 px-6 text-lg font-bold"
           title={isTrainingMode ? "Switch to Test Mode" : "Switch to Training Mode"}
         >
-          {isTrainingMode ? <Swords className="w-4 h-4" /> : <Brain className="w-4 h-4" />}
+          {isTrainingMode ? <Swords className="w-6 h-6" /> : <Brain className="w-6 h-6" />}
         </Button>
         <Button 
           variant="outline" 
-          size="icon"
+          size="lg"
           onClick={onStartOver}
-          className="bg-transparent border-white text-white hover:bg-white/20"
+          className="bg-transparent border-2 border-white text-white hover:bg-white/20 h-14 px-6 text-lg font-bold"
           title="Start Over"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-6 h-6" />
         </Button>
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="outline"
-              size="icon"
-              className="bg-transparent border-white text-white hover:bg-white/20"
+              size="lg"
+              className="bg-transparent border-2 border-white text-white hover:bg-white/20 h-14 px-6 text-lg font-bold"
               title="Settings"
             >
-              <Settings2 className="w-4 h-4" />
+              <Settings2 className="w-6 h-6" />
             </Button>
           </SheetTrigger>
           <SheetContent>
