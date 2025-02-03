@@ -1,82 +1,58 @@
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 interface SettingsContentProps {
-  isTrainingMode: boolean;
   selectedTables: number[];
   onTableToggle: (table: number) => void;
-  selectedTrainingTable: number;
   allowedQuestionParts: string[];
   onQuestionPartToggle: (part: string) => void;
 }
 
 export function SettingsContent({
-  isTrainingMode,
   selectedTables,
   onTableToggle,
-  selectedTrainingTable,
   allowedQuestionParts,
   onQuestionPartToggle,
 }: SettingsContentProps) {
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
+  const questionParts = [
+    { value: "first", label: "First Number" },
+    { value: "second", label: "Second Number" },
+    { value: "result", label: "Result" },
+  ];
 
   return (
-    <div className="py-4">
-      <h3 className="mb-4 text-sm font-medium">
-        {isTrainingMode ? "Select a table to practice:" : "Select Multiplication Tables:"}
-      </h3>
-      <div className="grid grid-cols-2 gap-4">
-        {allTables.map((table) => (
-          <div key={table} className="flex items-center space-x-2">
-            <Checkbox
-              id={`table-${table}`}
-              checked={isTrainingMode ? selectedTrainingTable === table : selectedTables.includes(table)}
-              onCheckedChange={() => onTableToggle(table)}
-              disabled={!isTrainingMode && selectedTables.length === 1 && selectedTables.includes(table)}
-            />
-            <label
-              htmlFor={`table-${table}`}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+    <div className="p-4">
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-2">Multiplication Tables</h3>
+        <div className="grid grid-cols-5 gap-2">
+          {allTables.map((table) => (
+            <Button
+              key={table}
+              variant={selectedTables.includes(table) ? "default" : "outline"}
+              onClick={() => onTableToggle(table)}
+              className="w-full"
             >
-              {table}x Table
-            </label>
-          </div>
-        ))}
+              {table}
+            </Button>
+          ))}
+        </div>
       </div>
 
-      {!isTrainingMode && (
-        <div className="mt-8">
-          <h3 className="mb-4 text-sm font-medium">Question Types:</h3>
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="first-number"
-                checked={allowedQuestionParts.includes("first")}
-                onCheckedChange={() => onQuestionPartToggle("first")}
-                disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("first")}
-              />
-              <label htmlFor="first-number">Hide First Number</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="second-number"
-                checked={allowedQuestionParts.includes("second")}
-                onCheckedChange={() => onQuestionPartToggle("second")}
-                disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("second")}
-              />
-              <label htmlFor="second-number">Hide Second Number</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="result"
-                checked={allowedQuestionParts.includes("result")}
-                onCheckedChange={() => onQuestionPartToggle("result")}
-                disabled={allowedQuestionParts.length === 1 && allowedQuestionParts.includes("result")}
-              />
-              <label htmlFor="result">Hide Result</label>
-            </div>
-          </div>
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Question Types</h3>
+        <div className="grid grid-cols-1 gap-2">
+          {questionParts.map(({ value, label }) => (
+            <Button
+              key={value}
+              variant={allowedQuestionParts.includes(value) ? "default" : "outline"}
+              onClick={() => onQuestionPartToggle(value)}
+              className="w-full"
+            >
+              {label}
+            </Button>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }

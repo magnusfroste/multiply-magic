@@ -4,6 +4,7 @@ import { Star } from "lucide-react";
 import { GameHeader } from "@/components/GameHeader";
 import { GameQuestion } from "@/components/GameQuestion";
 import { GameOver } from "@/components/GameOver";
+import { ScoreHistory } from "@/components/ScoreHistory";
 
 type QuestionPart = "first" | "second" | "result";
 
@@ -255,13 +256,17 @@ export default function Index() {
                 />
               </GameCard>
 
-              <div className="flex justify-center gap-2">
+              <div className="flex justify-center gap-2 mb-8">
                 {[...Array(score)].map((_, i) => (
                   <Star key={i} className="w-6 h-6 text-yellow-400 animate-celebrate" />
                 ))}
               </div>
             </>
           )}
+
+          <GameCard className="mt-8">
+            <ScoreHistory />
+          </GameCard>
         </div>
       </div>
     </div>
