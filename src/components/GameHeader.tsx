@@ -1,4 +1,4 @@
-import { Brain, RotateCcw, Settings2, Swords, Timer } from "lucide-react";
+import { Brain, RotateCcw, Settings2, Swords, Timer, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import {
@@ -9,6 +9,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SettingsContent } from "@/components/SettingsContent";
+import { ScoreHistory } from "@/components/ScoreHistory";
 
 interface GameHeaderProps {
   score: number;
@@ -39,7 +40,6 @@ export function GameHeader({
 }: GameHeaderProps) {
   return (
     <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
-      <h1 className="text-3xl font-bold text-white">Space Math!</h1>
       <div className="flex items-center gap-4">
         {!isTrainingMode && (
           <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-3 rounded-lg ${
@@ -95,6 +95,9 @@ export function GameHeader({
               allowedQuestionParts={allowedQuestionParts}
               onQuestionPartToggle={onQuestionPartToggle}
             />
+            <div className="mt-8">
+              <ScoreHistory />
+            </div>
           </SheetContent>
         </Sheet>
       </div>
