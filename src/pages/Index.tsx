@@ -130,15 +130,16 @@ export default function Index() {
 
     const isAnswerCorrect = selectedValue === correctAnswer;
     setIsCorrect(isAnswerCorrect);
+    setSelectedAnswer(selectedValue);
 
     if (isAnswerCorrect) {
-      setScore(score + 1);
-      if (score + 1 > highScore) {
-        setHighScore(score + 1);
+      const newScore = score + 1;
+      setScore(newScore);
+      if (newScore > highScore) {
+        setHighScore(newScore);
       }
       setTimeout(generateQuestion, 1500);
     } else {
-      setScore((prev) => Math.max(0, prev - 1));
       setTimeout(generateQuestion, 2000);
     }
   };
