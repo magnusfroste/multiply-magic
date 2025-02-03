@@ -26,6 +26,19 @@ export function GameQuestion({
   getSuccessMessage,
   getEncouragementMessage,
 }: GameQuestionProps) {
+  const correctAnswer = (() => {
+    switch (questionPart) {
+      case "first":
+        return num1;
+      case "second":
+        return num2;
+      case "result":
+        return num1 * num2;
+      default:
+        return num1 * num2;
+    }
+  })();
+
   return (
     <div className="text-center">
       <div className="text-4xl font-bold mb-6 text-white flex items-center justify-center gap-4">
@@ -84,6 +97,9 @@ export function GameQuestion({
               <Frown className="w-6 h-6" />
               <span>
                 {getEncouragementMessage().icon} {getEncouragementMessage().text}
+              </span>
+              <span className="ml-2 text-green-500">
+                Correct answer: {correctAnswer}
               </span>
             </>
           )}

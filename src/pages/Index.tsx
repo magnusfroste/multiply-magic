@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { GameCard } from "@/components/GameCard";
 import { Star } from "lucide-react";
-import { TrainingMode } from "@/components/TrainingMode";
 import { GameHeader } from "@/components/GameHeader";
 import { GameQuestion } from "@/components/GameQuestion";
 import { GameOver } from "@/components/GameOver";
@@ -16,8 +15,6 @@ export default function Index() {
   const [highScore, setHighScore] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [selectedTables, setSelectedTables] = useState<number[]>([1, 2, 5, 10]);
-  const [isTrainingMode, setIsTrainingMode] = useState(false);
-  const [selectedTrainingTable, setSelectedTrainingTable] = useState(5);
   const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
   const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["result"]);
   const [options, setOptions] = useState<number[]>([]);
@@ -45,7 +42,7 @@ export default function Index() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isGameActive && timeLeft > 0 && !isTrainingMode) {
+    if (isGameActive && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
@@ -69,7 +66,7 @@ export default function Index() {
       clearInterval(timer);
       document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
     };
-  }, [isGameActive, timeLeft, isTrainingMode]);
+  }, [isGameActive, timeLeft]);
 
   const generateQuestion = () => {
     if (!isGameActive) return;
@@ -161,12 +158,6 @@ export default function Index() {
   };
 
   const handleTableToggle = (table: number) => {
-    if (isTrainingMode) {
-      setSelectedTrainingTable(table);
-      setIsTrainingMode(true);
-      return;
-    }
-
     setSelectedTables((current) => {
       const updated = current.includes(table)
         ? current.filter((t) => t !== table)
@@ -238,12 +229,9 @@ export default function Index() {
             score={score}
             highScore={highScore}
             timeLeft={timeLeft}
-            isTrainingMode={isTrainingMode}
-            onTrainingModeToggle={() => setIsTrainingMode(!isTrainingMode)}
             onStartOver={startOver}
             selectedTables={selectedTables}
             onTableToggle={handleTableToggle}
-            selectedTrainingTable={selectedTrainingTable}
             allowedQuestionParts={allowedQuestionParts}
             onQuestionPartToggle={handleQuestionPartToggle}
           />
@@ -252,24 +240,20 @@ export default function Index() {
             <GameOver score={score} onStartOver={startOver} />
           ) : (
             <>
-              {isTrainingMode ? (
-                <TrainingMode selectedTable={selectedTrainingTable} />
-              ) : (
-                <GameCard className="mb-6 animate-float">
-                  <GameQuestion
-                    num1={num1}
-                    num2={num2}
-                    questionPart={questionPart}
-                    options={options}
-                    isCorrect={isCorrect}
-                    selectedAnswer={selectedAnswer}
-                    isGameActive={isGameActive}
-                    onOptionClick={handleOptionClick}
-                    getSuccessMessage={getSuccessMessage}
-                    getEncouragementMessage={getEncouragementMessage}
-                  />
-                </GameCard>
-              )}
+              <GameCard className="mb-6 animate-float">
+                <GameQuestion
+                  num1={num1}
+                  num2={num2}
+                  questionPart={questionPart}
+                  options={options}
+                  isCorrect={isCorrect}
+                  selectedAnswer={selectedAnswer}
+                  isGameActive={isGameActive}
+                  onOptionClick={handleOptionClick}
+                  getSuccessMessage={getSuccessMessage}
+                  getEncouragementMessage={getEncouragementMessage}
+                />
+              </GameCard>
 
               <div className="flex justify-center gap-2">
                 {[...Array(score)].map((_, i) => (
