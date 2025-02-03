@@ -43,19 +43,34 @@ export function GameQuestion({
     <div className="text-center">
       <div className="text-4xl font-bold mb-6 text-white flex items-center justify-center gap-4">
         {questionPart === "first" ? (
-          <span className="w-24">?</span>
+          <div className="flex items-center gap-2">
+            <span className="w-24">{selectedAnswer !== null ? selectedAnswer : "?"}</span>
+            {isCorrect === false && (
+              <span className="text-green-500">{correctAnswer}</span>
+            )}
+          </div>
         ) : (
           <span>{num1}</span>
         )}
         <span>×</span>
         {questionPart === "second" ? (
-          <span className="w-24">?</span>
+          <div className="flex items-center gap-2">
+            <span className="w-24">{selectedAnswer !== null ? selectedAnswer : "?"}</span>
+            {isCorrect === false && (
+              <span className="text-green-500">{correctAnswer}</span>
+            )}
+          </div>
         ) : (
           <span>{num2}</span>
         )}
         <span>=</span>
         {questionPart === "result" ? (
-          <span className="w-24">?</span>
+          <div className="flex items-center gap-2">
+            <span className="w-24">{selectedAnswer !== null ? selectedAnswer : "?"}</span>
+            {isCorrect === false && (
+              <span className="text-green-500">{correctAnswer}</span>
+            )}
+          </div>
         ) : (
           <span>{num1 * num2}</span>
         )}
@@ -97,9 +112,6 @@ export function GameQuestion({
               <Frown className="w-6 h-6" />
               <span>
                 {getEncouragementMessage().icon} {getEncouragementMessage().text}
-              </span>
-              <span className="ml-2 text-green-500">
-                Correct answer: {correctAnswer}
               </span>
             </>
           )}
