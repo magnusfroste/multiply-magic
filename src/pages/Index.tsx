@@ -4,7 +4,7 @@ import { Star } from "lucide-react";
 import { GameHeader } from "@/components/GameHeader";
 import { GameQuestion } from "@/components/GameQuestion";
 import { GameOver } from "@/components/GameOver";
-import { ScoreHistory } from "@/components/ScoreHistory";
+import { ScoreHistory, scoreHistoryUtils } from "@/components/ScoreHistory";
 
 type QuestionPart = "first" | "second" | "result";
 
@@ -222,6 +222,12 @@ export default function Index() {
     ];
     return messages[Math.floor(Math.random() * messages.length)];
   };
+
+  useEffect(() => {
+    if (!isGameActive && score > 0) {
+      scoreHistoryUtils.addScore(score);
+    }
+  }, [isGameActive, score]);
 
   return (
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">

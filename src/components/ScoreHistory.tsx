@@ -1,5 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface ScoreData {
   id: number;
@@ -7,20 +7,27 @@ interface ScoreData {
   timestamp: string;
 }
 
-const mockScoreData = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  score: Math.floor(Math.random() * 50),
-  timestamp: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toLocaleDateString()
-}));
+// We'll keep scores in memory since we don't have a backend
+let scoreHistory: ScoreData[] = [];
 
 export function ScoreHistory() {
+  const queryClient = useQueryClient();
+
   const { data: scores } = useQuery({
     queryKey: ['scores'],
-    queryFn: async () => {
-      // In a real app, this would fetch from an API
-      return mockScoreData;
-    },
+    queryFn: () => scoreHistory,
   });
+
+  // Export this function to be used in Index.tsx
+  const addScore = (newScore: number) => {
+    const newEntry = {
+      id: scoreHistory.length + 1,
+      score: newScore,
+      timestamp: new Date().toLocaleDateString()
+    };
+    scoreHistory = [...scoreHistory, newEntry];
+    queryClient.setQueryData(['scores'], scoreHistory);
+  };
 
   if (!scores) return null;
 
@@ -44,3 +51,15 @@ export function ScoreHistory() {
     </div>
   );
 }
+
+// Export the addScore function
+export const scoreHistoryUtils = {
+  addScore: (score: number) => {
+    const newEntry = {
+      id: scoreHistory.length + 1,
+      score: score,
+      timestamp: new Date().toLocaleDateString()
+    };
+    scoreHistory = [...scoreHistory, newEntry];
+  }
+};
