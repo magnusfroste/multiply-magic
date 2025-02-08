@@ -18,17 +18,6 @@ export function ScoreHistory() {
     queryFn: () => scoreHistory,
   });
 
-  // Export this function to be used in Index.tsx
-  const addScore = (newScore: number) => {
-    const newEntry = {
-      id: scoreHistory.length + 1,
-      score: newScore,
-      timestamp: new Date().toLocaleDateString()
-    };
-    scoreHistory = [...scoreHistory, newEntry];
-    queryClient.setQueryData(['scores'], scoreHistory);
-  };
-
   if (!scores) return null;
 
   return (
@@ -61,5 +50,8 @@ export const scoreHistoryUtils = {
       timestamp: new Date().toLocaleDateString()
     };
     scoreHistory = [...scoreHistory, newEntry];
+    // Update the query cache immediately after modifying the data
+    const queryClient = new useQueryClient();
+    queryClient.setQueryData(['scores'], scoreHistory);
   }
 };
