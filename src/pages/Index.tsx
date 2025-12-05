@@ -23,6 +23,8 @@ export default function Index() {
   const [options, setOptions] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isGameActive, setIsGameActive] = useState(true);
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
 
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -140,8 +142,14 @@ export default function Index() {
       if (newScore > highScore) {
         setHighScore(newScore);
       }
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      if (newStreak > bestStreak) {
+        setBestStreak(newStreak);
+      }
       setTimeout(generateQuestion, 1500);
     } else {
+      setStreak(0);
       setTimeout(generateQuestion, 2000);
     }
   };
@@ -158,6 +166,7 @@ export default function Index() {
     setIsCorrect(null);
     setTimeLeft(60);
     setIsGameActive(true);
+    setStreak(0);
     generateQuestion();
   };
 
@@ -239,6 +248,8 @@ export default function Index() {
             score={score}
             highScore={highScore}
             timeLeft={timeLeft}
+            streak={streak}
+            bestStreak={bestStreak}
             onStartOver={startOver}
             selectedTables={selectedTables}
             onTableToggle={handleTableToggle}
