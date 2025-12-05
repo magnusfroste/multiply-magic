@@ -76,7 +76,7 @@ export function GameQuestion({
         )}
       </div>
       
-      <div className="grid grid-cols-5 gap-1 md:gap-3 mb-4">
+      <div className="grid grid-cols-5 gap-1 md:gap-3">
         {options.map((option) => (
           <Button
             key={option}
@@ -98,25 +98,27 @@ export function GameQuestion({
         ))}
       </div>
 
-      {isCorrect !== null && (
-        <div className={`flex items-center justify-center gap-2 text-xl font-bold ${isCorrect ? "text-green-400" : "text-amber-400"}`}>
-          {isCorrect ? (
-            <>
-              <Smile className="w-6 h-6" />
-              <span className="animate-bounce">
-                {getSuccessMessage().icon} {getSuccessMessage().text}
-              </span>
-            </>
-          ) : (
-            <>
-              <Frown className="w-6 h-6" />
-              <span>
-                {getEncouragementMessage().icon} {getEncouragementMessage().text}
-              </span>
-            </>
-          )}
-        </div>
-      )}
+      <div className="min-h-[32px] mt-4">
+        {isCorrect !== null && (
+          <div className={`flex items-center justify-center gap-2 text-xl font-bold ${isCorrect ? "text-green-400" : "text-amber-400"}`}>
+            {isCorrect ? (
+              <>
+                <Smile className="w-6 h-6" />
+                <span className="animate-bounce">
+                  {getSuccessMessage().icon} {getSuccessMessage().text}
+                </span>
+              </>
+            ) : (
+              <>
+                <Frown className="w-6 h-6" />
+                <span>
+                  {getEncouragementMessage().icon} {getEncouragementMessage().text}
+                </span>
+              </>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
