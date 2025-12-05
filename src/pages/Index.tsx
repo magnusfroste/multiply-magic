@@ -146,7 +146,6 @@ export default function Index() {
       setScore(newScore);
       if (newScore > highScore) {
         setHighScore(newScore);
-        celebrateHighScore();
       }
       const newStreak = streak + 1;
       setStreak(newStreak);
@@ -247,8 +246,12 @@ export default function Index() {
   useEffect(() => {
     if (!isGameActive && score > 0) {
       scoreHistoryUtils.addScore(score, queryClient);
+      // Celebrate if this was a new high score
+      if (score >= highScore && score > 0) {
+        celebrateHighScore();
+      }
     }
-  }, [isGameActive, score, queryClient]);
+  }, [isGameActive, score, highScore, queryClient]);
 
   return (
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
