@@ -8,6 +8,7 @@ import { GameOver } from "@/components/GameOver";
 import { Countdown } from "@/components/Countdown";
 import { ScoreHistory, scoreHistoryUtils } from "@/components/ScoreHistory";
 import { playCorrectSound, playIncorrectSound } from "@/lib/sounds";
+import { celebrateHighScore } from "@/lib/confetti";
 
 type QuestionPart = "first" | "second" | "result";
 
@@ -145,6 +146,7 @@ export default function Index() {
       setScore(newScore);
       if (newScore > highScore) {
         setHighScore(newScore);
+        celebrateHighScore();
       }
       const newStreak = streak + 1;
       setStreak(newStreak);
