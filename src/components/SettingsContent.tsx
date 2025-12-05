@@ -23,10 +23,47 @@ export function SettingsContent({
   const allTablesSelected = selectedTables.length === 10;
   const allQuestionTypesSelected = allowedQuestionParts.length === 3;
 
+  const handleSelectAllTables = () => {
+    allTables.forEach((table) => {
+      if (!selectedTables.includes(table)) {
+        onTableToggle(table);
+      }
+    });
+  };
+
+  const handleClearTables = () => {
+    // Keep at least one table selected (the first one)
+    selectedTables.slice(1).forEach((table) => {
+      onTableToggle(table);
+    });
+  };
+
   return (
     <div className="p-4">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Multiplication Tables</h3>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-semibold">Multiplication Tables</h3>
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSelectAllTables}
+              disabled={allTablesSelected}
+              className="text-xs h-7"
+            >
+              Select All
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClearTables}
+              disabled={selectedTables.length <= 1}
+              className="text-xs h-7"
+            >
+              Clear
+            </Button>
+          </div>
+        </div>
         <p className="text-sm text-muted-foreground mb-3">
           {allTablesSelected 
             ? "✨ All tables selected (random mode). Tap to focus on specific ones!" 
