@@ -1,4 +1,4 @@
-import { Brain, RotateCcw, Settings2, Timer, Trophy } from "lucide-react";
+import { Flame, RotateCcw, Settings2, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import {
@@ -13,6 +13,8 @@ interface GameHeaderProps {
   score: number;
   highScore: number;
   timeLeft: number;
+  streak: number;
+  bestStreak: number;
   onStartOver: () => void;
   selectedTables: number[];
   onTableToggle: (table: number) => void;
@@ -24,6 +26,8 @@ export function GameHeader({
   score,
   highScore,
   timeLeft,
+  streak,
+  bestStreak,
   onStartOver,
   selectedTables,
   onTableToggle,
@@ -40,6 +44,17 @@ export function GameHeader({
           <span className="font-mono">{timeLeft}s</span>
         </div>
         <ScoreDisplay score={score} highScore={highScore} />
+        {streak > 0 && (
+          <div className={`flex items-center gap-2 text-orange-400 bg-orange-500/20 p-3 rounded-lg ${
+            streak >= 5 ? "animate-pulse" : ""
+          }`}>
+            <Flame className={`w-5 h-5 ${streak >= 3 ? "text-orange-500" : ""}`} />
+            <span className="font-mono font-bold">{streak}</span>
+            {bestStreak > 0 && streak < bestStreak && (
+              <span className="text-xs text-orange-300/60">/{bestStreak}</span>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center gap-2">
