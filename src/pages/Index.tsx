@@ -35,17 +35,17 @@ export default function Index() {
   const generateOptions = (correctAnswer: number) => {
     const options = new Set<number>();
     options.add(correctAnswer);
-    
+
     while (options.size < 5) {
       const offset = Math.floor(Math.random() * 5) + 1;
       const isAdd = Math.random() > 0.5;
       const wrongAnswer = isAdd ? correctAnswer + offset : correctAnswer - offset;
-      
+
       if (wrongAnswer > 0) {
         options.add(wrongAnswer);
       }
     }
-    
+
     return Array.from(options).sort((a, b) => a - b);
   };
 
@@ -66,7 +66,7 @@ export default function Index() {
         document.body.style.background = "linear-gradient(135deg, #8B5CF6 0%, #D946EF 100%)";
         document.body.style.transition = "background 0.5s ease-in-out";
       }
-      
+
       if (timeLeft === 0) {
         document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
       }
@@ -79,7 +79,7 @@ export default function Index() {
 
   const generateQuestion = () => {
     if (!isGameActive) return;
-    
+
     if (selectedTables.length === 0) {
       console.warn("No tables selected");
       return;
@@ -96,7 +96,7 @@ export default function Index() {
     if (allowedQuestionParts.length > 0) {
       const randomPart = allowedQuestionParts[Math.floor(Math.random() * allowedQuestionParts.length)];
       setQuestionPart(randomPart);
-      
+
       switch (randomPart) {
         case "first":
           correctAnswer = randomNum1;
@@ -186,7 +186,7 @@ export default function Index() {
       const updated = current.includes(table)
         ? current.filter((t) => t !== table)
         : [...current, table].sort((a, b) => a - b);
-      
+
       if (updated.length === 0) {
         console.warn("You must keep at least one table selected");
         return current;
@@ -197,10 +197,8 @@ export default function Index() {
 
   const handleQuestionPartToggle = (part: QuestionPart) => {
     setAllowedQuestionParts((current) => {
-      const updated = current.includes(part)
-        ? current.filter((p) => p !== part)
-        : [...current, part];
-      
+      const updated = current.includes(part) ? current.filter((p) => p !== part) : [...current, part];
+
       if (updated.length === 0) {
         console.warn("You must keep at least one question type selected");
         return current;
@@ -222,7 +220,7 @@ export default function Index() {
       { text: "Incredible! You're a math superstar!", icon: "🌈" },
       { text: "Outstanding! Keep up the great work!", icon: "🎯" },
       { text: "Superb! Your hard work is paying off!", icon: "🎨" },
-      { text: "Perfect! You're unstoppable!", icon: "🚀" }
+      { text: "Perfect! You're unstoppable!", icon: "🚀" },
     ];
     return messages[Math.floor(Math.random() * messages.length)];
   };
@@ -238,7 +236,7 @@ export default function Index() {
       { text: "Mistakes help us learn! Try once more!", icon: "🌈" },
       { text: "Stay positive! You'll get it next time!", icon: "☀️" },
       { text: "You're brave to keep trying! Let's go again!", icon: "🦁" },
-      { text: "Never give up! You're getting better!", icon: "🌟" }
+      { text: "Never give up! You're getting better!", icon: "🌟" },
     ];
     return messages[Math.floor(Math.random() * messages.length)];
   };
@@ -260,9 +258,9 @@ export default function Index() {
           {/* App Logo & Name */}
           <div className="flex items-center justify-center gap-3 mb-6">
             <img src="/logo.png" alt="Matte Kul" className="w-12 h-12 rounded-xl" />
-            <h1 className="text-2xl font-bold text-white">Matte Kul</h1>
+            <h1 className="text-2xl font-bold text-white">Multiply Magic</h1>
           </div>
-          
+
           <GameHeader
             score={score}
             highScore={highScore}
