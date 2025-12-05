@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { GameCard } from "@/components/GameCard";
 import { Star } from "lucide-react";
 import { GameHeader } from "@/components/GameHeader";
@@ -9,6 +10,7 @@ import { ScoreHistory, scoreHistoryUtils } from "@/components/ScoreHistory";
 type QuestionPart = "first" | "second" | "result";
 
 export default function Index() {
+  const queryClient = useQueryClient();
   const [num1, setNum1] = useState(1);
   const [num2, setNum2] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -225,9 +227,9 @@ export default function Index() {
 
   useEffect(() => {
     if (!isGameActive && score > 0) {
-      scoreHistoryUtils.addScore(score);
+      scoreHistoryUtils.addScore(score, queryClient);
     }
-  }, [isGameActive, score]);
+  }, [isGameActive, score, queryClient]);
 
   return (
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
