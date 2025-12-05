@@ -60,21 +60,21 @@ export function GameHeader({
         />
       </div>
       
-      <div className="flex flex-row justify-between items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-3 rounded-lg ${
+      <div className="flex flex-wrap justify-between items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-2 rounded-lg ${
             timeLeft <= 10 ? "animate-pulse" : ""
           }`}>
-            <Timer className="w-5 h-5" />
-            <span className="font-mono">{timeLeft}s</span>
+            <Timer className="w-4 h-4" />
+            <span className="font-mono text-sm">{timeLeft}s</span>
           </div>
           <ScoreDisplay score={score} highScore={highScore} />
           {streak > 0 && (
-            <div className={`flex items-center gap-2 text-orange-400 bg-orange-500/20 p-3 rounded-lg ${
+            <div className={`flex items-center gap-2 text-orange-400 bg-orange-500/20 p-2 rounded-lg ${
               streak >= 5 ? "animate-pulse" : ""
             }`}>
-              <Flame className={`w-5 h-5 ${streak >= 3 ? "text-orange-500" : ""}`} />
-              <span className="font-mono font-bold">{streak}</span>
+              <Flame className={`w-4 h-4 ${streak >= 3 ? "text-orange-500" : ""}`} />
+              <span className="font-mono font-bold text-sm">{streak}</span>
               {bestStreak > 0 && streak < bestStreak && (
                 <span className="text-xs text-orange-300/60">/{bestStreak}</span>
               )}
@@ -82,7 +82,7 @@ export function GameHeader({
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Button
             variant="outline"
             size="icon"
