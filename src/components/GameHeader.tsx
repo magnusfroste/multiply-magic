@@ -43,72 +43,89 @@ export function GameHeader({
     setMuted(newMuted);
   };
 
+  const timePercentage = (timeLeft / 60) * 100;
+  const getTimerColor = () => {
+    if (timeLeft <= 10) return "bg-red-500";
+    if (timeLeft <= 20) return "bg-yellow-500";
+    return "bg-green-500";
+  };
+
   return (
-    <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div className="flex items-center gap-4">
-        <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-3 rounded-lg ${
-          timeLeft <= 10 ? "animate-pulse" : ""
-        }`}>
-          <Timer className="w-5 h-5" />
-          <span className="font-mono">{timeLeft}s</span>
-        </div>
-        <ScoreDisplay score={score} highScore={highScore} />
-        {streak > 0 && (
-          <div className={`flex items-center gap-2 text-orange-400 bg-orange-500/20 p-3 rounded-lg ${
-            streak >= 5 ? "animate-pulse" : ""
-          }`}>
-            <Flame className={`w-5 h-5 ${streak >= 3 ? "text-orange-500" : ""}`} />
-            <span className="font-mono font-bold">{streak}</span>
-            {bestStreak > 0 && streak < bestStreak && (
-              <span className="text-xs text-orange-300/60">/{bestStreak}</span>
-            )}
-          </div>
-        )}
+    <div className="mb-8 flex flex-col gap-4">
+      {/* Progress bar */}
+      <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+        <div 
+          className={`h-full ${getTimerColor()} transition-all duration-1000 ease-linear`}
+          style={{ width: `${timePercentage}%` }}
+        />
       </div>
-
-      <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleMuteToggle}
-          className="bg-transparent border-2 border-white text-white hover:bg-white/20"
-          title={muted ? "Unmute" : "Mute"}
-        >
-          {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={onStartOver}
-          className="bg-transparent border-2 border-white text-white hover:bg-white/20"
-          title="Reset"
-        >
-          <RotateCcw className="w-5 h-5" />
-        </Button>
-
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="bg-transparent border-2 border-white text-white hover:bg-white/20"
-              title="Settings"
-            >
-              <Settings2 className="w-5 h-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SettingsContent
-              selectedTables={selectedTables}
-              onTableToggle={onTableToggle}
-              allowedQuestionParts={allowedQuestionParts}
-              onQuestionPartToggle={onQuestionPartToggle}
-            />
-            <div className="mt-8">
-              <ScoreHistory />
+      
+      <div className="flex flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-4">
+          <div className={`flex items-center gap-2 text-white bg-game-primary/20 p-3 rounded-lg ${
+            timeLeft <= 10 ? "animate-pulse" : ""
+          }`}>
+            <Timer className="w-5 h-5" />
+            <span className="font-mono">{timeLeft}s</span>
+          </div>
+          <ScoreDisplay score={score} highScore={highScore} />
+          {streak > 0 && (
+            <div className={`flex items-center gap-2 text-orange-400 bg-orange-500/20 p-3 rounded-lg ${
+              streak >= 5 ? "animate-pulse" : ""
+            }`}>
+              <Flame className={`w-5 h-5 ${streak >= 3 ? "text-orange-500" : ""}`} />
+              <span className="font-mono font-bold">{streak}</span>
+              {bestStreak > 0 && streak < bestStreak && (
+                <span className="text-xs text-orange-300/60">/{bestStreak}</span>
+              )}
             </div>
-          </SheetContent>
-        </Sheet>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleMuteToggle}
+            className="bg-transparent border-2 border-white text-white hover:bg-white/20"
+            title={muted ? "Unmute" : "Mute"}
+          >
+            {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onStartOver}
+            className="bg-transparent border-2 border-white text-white hover:bg-white/20"
+            title="Reset"
+          >
+            <RotateCcw className="w-5 h-5" />
+          </Button>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="bg-transparent border-2 border-white text-white hover:bg-white/20"
+                title="Settings"
+              >
+                <Settings2 className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <SettingsContent
+                selectedTables={selectedTables}
+                onTableToggle={onTableToggle}
+                allowedQuestionParts={allowedQuestionParts}
+                onQuestionPartToggle={onQuestionPartToggle}
+              />
+              <div className="mt-8">
+                <ScoreHistory />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </div>
   );
