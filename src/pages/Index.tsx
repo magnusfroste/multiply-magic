@@ -257,6 +257,12 @@ export default function Index() {
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
       <div className="w-full max-w-4xl">
         <div className="w-full max-w-lg mx-auto">
+          {/* App Logo & Name */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <img src="/logo.png" alt="Matte Kul" className="w-12 h-12 rounded-xl" />
+            <h1 className="text-2xl font-bold text-white">Matte Kul</h1>
+          </div>
+          
           <GameHeader
             score={score}
             highScore={highScore}
