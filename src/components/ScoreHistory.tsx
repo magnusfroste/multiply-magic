@@ -1,6 +1,6 @@
 
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, QueryClient } from '@tanstack/react-query';
 
 interface ScoreData {
   id: number;
@@ -12,8 +12,6 @@ interface ScoreData {
 let scoreHistory: ScoreData[] = [];
 
 export function ScoreHistory() {
-  const queryClient = useQueryClient();
-
   const { data: scores } = useQuery({
     queryKey: ['scores'],
     queryFn: () => scoreHistory,
@@ -51,15 +49,13 @@ export function ScoreHistory() {
 
 // Export the addScore function
 export const scoreHistoryUtils = {
-  addScore: (score: number) => {
+  addScore: (score: number, queryClient: QueryClient) => {
     const newEntry = {
       id: scoreHistory.length + 1,
       score: score,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     scoreHistory = [...scoreHistory, newEntry];
-    // Update the query cache immediately after modifying the data
-    const queryClient = useQueryClient();
     queryClient.setQueryData(['scores'], scoreHistory);
   }
 };
