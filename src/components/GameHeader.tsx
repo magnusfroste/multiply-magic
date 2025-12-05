@@ -78,23 +78,23 @@ export function GameHeader({
         </Button>
         <Button
           variant="outline"
-          size="lg"
+          size="icon"
           onClick={onStartOver}
           className="bg-transparent border-2 border-white text-white hover:bg-white/20"
+          title="Reset"
         >
-          <RotateCcw className="w-6 h-6 mr-2" />
-          Reset
+          <RotateCcw className="w-5 h-5" />
         </Button>
 
         <Sheet>
           <SheetTrigger asChild>
             <Button
               variant="outline"
-              size="lg"
+              size="icon"
               className="bg-transparent border-2 border-white text-white hover:bg-white/20"
+              title="Settings"
             >
-              <Settings2 className="w-6 h-6 mr-2" />
-              Settings
+              <Settings2 className="w-5 h-5" />
             </Button>
           </SheetTrigger>
           <SheetContent>
