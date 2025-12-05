@@ -17,9 +17,9 @@ export default function Index() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [selectedTables, setSelectedTables] = useState<number[]>([1, 2, 5, 10]);
+  const [selectedTables, setSelectedTables] = useState<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
-  const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["result"]);
+  const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["first", "second", "result"]);
   const [options, setOptions] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isGameActive, setIsGameActive] = useState(true);
