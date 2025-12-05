@@ -21,7 +21,7 @@ export default function Index() {
   const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
   const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["result"]);
   const [options, setOptions] = useState<number[]>([]);
-  const [timeLeft, setTimeLeft] = useState(120);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [isGameActive, setIsGameActive] = useState(true);
 
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
@@ -156,7 +156,7 @@ export default function Index() {
     setScore(0);
     setSelectedAnswer(null);
     setIsCorrect(null);
-    setTimeLeft(120);
+    setTimeLeft(60);
     setIsGameActive(true);
     generateQuestion();
   };
