@@ -6,6 +6,7 @@ import { GameHeader } from "@/components/GameHeader";
 import { GameQuestion } from "@/components/GameQuestion";
 import { GameOver } from "@/components/GameOver";
 import { ScoreHistory, scoreHistoryUtils } from "@/components/ScoreHistory";
+import { playCorrectSound, playIncorrectSound } from "@/lib/sounds";
 
 type QuestionPart = "first" | "second" | "result";
 
@@ -137,6 +138,7 @@ export default function Index() {
     setSelectedAnswer(selectedValue);
 
     if (isAnswerCorrect) {
+      playCorrectSound();
       const newScore = score + 1;
       setScore(newScore);
       if (newScore > highScore) {
@@ -149,6 +151,7 @@ export default function Index() {
       }
       setTimeout(generateQuestion, 1500);
     } else {
+      playIncorrectSound();
       setStreak(0);
       setTimeout(generateQuestion, 2000);
     }
