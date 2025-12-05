@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { GameCard } from "@/components/GameCard";
 import { Star } from "lucide-react";
 import { GameHeader } from "@/components/GameHeader";
 import { GameQuestion } from "@/components/GameQuestion";
 import { GameOver } from "@/components/GameOver";
+import { Countdown } from "@/components/Countdown";
 import { ScoreHistory, scoreHistoryUtils } from "@/components/ScoreHistory";
 import { playCorrectSound, playIncorrectSound } from "@/lib/sounds";
 
@@ -26,6 +27,7 @@ export default function Index() {
   const [isGameActive, setIsGameActive] = useState(true);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
+  const [showCountdown, setShowCountdown] = useState(true);
 
   const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -48,7 +50,7 @@ export default function Index() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isGameActive && timeLeft > 0) {
+    if (isGameActive && !showCountdown && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
@@ -72,7 +74,7 @@ export default function Index() {
       clearInterval(timer);
       document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
     };
-  }, [isGameActive, timeLeft]);
+  }, [isGameActive, showCountdown, timeLeft]);
 
   const generateQuestion = () => {
     if (!isGameActive) return;
@@ -170,8 +172,13 @@ export default function Index() {
     setTimeLeft(60);
     setIsGameActive(true);
     setStreak(0);
-    generateQuestion();
+    setShowCountdown(true);
   };
+
+  const handleCountdownComplete = useCallback(() => {
+    setShowCountdown(false);
+    generateQuestion();
+  }, []);
 
   const handleTableToggle = (table: number) => {
     setSelectedTables((current) => {
@@ -201,9 +208,7 @@ export default function Index() {
     });
   };
 
-  useEffect(() => {
-    generateQuestion();
-  }, []);
+  // Remove auto-generate on mount - countdown handles it now
 
   const getSuccessMessage = () => {
     const messages = [
@@ -262,6 +267,10 @@ export default function Index() {
 
           {!isGameActive ? (
             <GameOver score={score} onStartOver={startOver} />
+          ) : showCountdown ? (
+            <GameCard className="mb-6">
+              <Countdown onComplete={handleCountdownComplete} />
+            </GameCard>
           ) : (
             <>
               <GameCard className="mb-6 animate-float">
