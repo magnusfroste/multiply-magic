@@ -1,4 +1,6 @@
-import { Flame, RotateCcw, Settings2, Timer } from "lucide-react";
+import { Flame, RotateCcw, Settings2, Timer, Volume2, VolumeX } from "lucide-react";
+import { useState } from "react";
+import { isSoundMuted, toggleMute } from "@/lib/sounds";
 import { Button } from "@/components/ui/button";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import {
@@ -34,6 +36,13 @@ export function GameHeader({
   allowedQuestionParts,
   onQuestionPartToggle,
 }: GameHeaderProps) {
+  const [muted, setMuted] = useState(isSoundMuted());
+  
+  const handleMuteToggle = () => {
+    const newMuted = toggleMute();
+    setMuted(newMuted);
+  };
+
   return (
     <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
       <div className="flex items-center gap-4">
@@ -58,6 +67,15 @@ export function GameHeader({
       </div>
 
       <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleMuteToggle}
+          className="bg-transparent border-2 border-white text-white hover:bg-white/20"
+          title={muted ? "Unmute" : "Mute"}
+        >
+          {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+        </Button>
         <Button
           variant="outline"
           size="lg"
