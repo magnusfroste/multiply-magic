@@ -1,5 +1,6 @@
 // Simple sound effects using Web Audio API
 let audioContext: AudioContext | null = null;
+let isMuted = localStorage.getItem('soundMuted') === 'true';
 
 const getAudioContext = () => {
   if (!audioContext) {
@@ -8,7 +9,16 @@ const getAudioContext = () => {
   return audioContext;
 };
 
+export const isSoundMuted = () => isMuted;
+
+export const toggleMute = () => {
+  isMuted = !isMuted;
+  localStorage.setItem('soundMuted', String(isMuted));
+  return isMuted;
+};
+
 export const playCorrectSound = () => {
+  if (isMuted) return;
   try {
     const ctx = getAudioContext();
     const oscillator = ctx.createOscillator();
@@ -33,6 +43,7 @@ export const playCorrectSound = () => {
 };
 
 export const playIncorrectSound = () => {
+  if (isMuted) return;
   try {
     const ctx = getAudioContext();
     const oscillator = ctx.createOscillator();
