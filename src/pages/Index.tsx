@@ -1,255 +1,36 @@
-import { useState, useEffect, useCallback } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { GameCard } from "@/components/GameCard";
 import { Star } from "lucide-react";
+import { GameCard } from "@/components/GameCard";
 import { GameHeader } from "@/components/GameHeader";
 import { GameQuestion } from "@/components/GameQuestion";
 import { GameOver } from "@/components/GameOver";
 import { Countdown } from "@/components/Countdown";
-import { ScoreHistory, scoreHistoryUtils } from "@/components/ScoreHistory";
-import { playCorrectSound, playIncorrectSound } from "@/lib/sounds";
-import { celebrateHighScore } from "@/lib/confetti";
-
-type QuestionPart = "first" | "second" | "result";
+import { ScoreHistory } from "@/components/ScoreHistory";
+import { useGameLogic } from "@/hooks/useGameLogic";
+import { getSuccessMessage, getEncouragementMessage } from "@/lib/gameUtils";
 
 export default function Index() {
-  const queryClient = useQueryClient();
-  const [num1, setNum1] = useState(1);
-  const [num2, setNum2] = useState(1);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [selectedTables, setSelectedTables] = useState<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-  const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
-  const [allowedQuestionParts, setAllowedQuestionParts] = useState<QuestionPart[]>(["first", "second", "result"]);
-  const [options, setOptions] = useState<number[]>([]);
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [isGameActive, setIsGameActive] = useState(true);
-  const [streak, setStreak] = useState(0);
-  const [bestStreak, setBestStreak] = useState(0);
-  const [showCountdown, setShowCountdown] = useState(true);
-
-  const allTables = Array.from({ length: 10 }, (_, i) => i + 1);
-
-  const generateOptions = (correctAnswer: number) => {
-    const options = new Set<number>();
-    options.add(correctAnswer);
-
-    while (options.size < 5) {
-      const offset = Math.floor(Math.random() * 5) + 1;
-      const isAdd = Math.random() > 0.5;
-      const wrongAnswer = isAdd ? correctAnswer + offset : correctAnswer - offset;
-
-      if (wrongAnswer > 0) {
-        options.add(wrongAnswer);
-      }
-    }
-
-    return Array.from(options).sort((a, b) => a - b);
-  };
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (isGameActive && !showCountdown && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            setIsGameActive(false);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      if (timeLeft === 10) {
-        document.body.style.background = "linear-gradient(135deg, #8B5CF6 0%, #D946EF 100%)";
-        document.body.style.transition = "background 0.5s ease-in-out";
-      }
-
-      if (timeLeft === 0) {
-        document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
-      }
-    }
-    return () => {
-      clearInterval(timer);
-      document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
-    };
-  }, [isGameActive, showCountdown, timeLeft]);
-
-  const generateQuestion = () => {
-    if (!isGameActive) return;
-
-    if (selectedTables.length === 0) {
-      console.warn("No tables selected");
-      return;
-    }
-
-    const randomNum1 = selectedTables[Math.floor(Math.random() * selectedTables.length)];
-    const randomNum2 = allTables[Math.floor(Math.random() * allTables.length)];
-    setNum1(randomNum1);
-    setNum2(randomNum2);
-    setSelectedAnswer(null);
-    setIsCorrect(null);
-
-    let correctAnswer: number;
-    if (allowedQuestionParts.length > 0) {
-      const randomPart = allowedQuestionParts[Math.floor(Math.random() * allowedQuestionParts.length)];
-      setQuestionPart(randomPart);
-
-      switch (randomPart) {
-        case "first":
-          correctAnswer = randomNum1;
-          break;
-        case "second":
-          correctAnswer = randomNum2;
-          break;
-        case "result":
-          correctAnswer = randomNum1 * randomNum2;
-          break;
-        default:
-          correctAnswer = randomNum1 * randomNum2;
-      }
-    } else {
-      correctAnswer = randomNum1 * randomNum2;
-    }
-
-    const newOptions = generateOptions(correctAnswer);
-    setOptions(newOptions);
-  };
-
-  const checkAnswer = (selectedValue: number) => {
-    if (!isGameActive) return;
-
-    let correctAnswer: number;
-    switch (questionPart) {
-      case "first":
-        correctAnswer = num1;
-        break;
-      case "second":
-        correctAnswer = num2;
-        break;
-      case "result":
-        correctAnswer = num1 * num2;
-        break;
-      default:
-        correctAnswer = num1 * num2;
-    }
-
-    const isAnswerCorrect = selectedValue === correctAnswer;
-    setIsCorrect(isAnswerCorrect);
-    setSelectedAnswer(selectedValue);
-
-    if (isAnswerCorrect) {
-      playCorrectSound();
-      const newScore = score + 1;
-      setScore(newScore);
-      if (newScore > highScore) {
-        setHighScore(newScore);
-      }
-      const newStreak = streak + 1;
-      setStreak(newStreak);
-      if (newStreak > bestStreak) {
-        setBestStreak(newStreak);
-      }
-      setTimeout(generateQuestion, 1500);
-    } else {
-      playIncorrectSound();
-      setStreak(0);
-      setTimeout(generateQuestion, 2000);
-    }
-  };
-
-  const handleOptionClick = (value: number) => {
-    if (isCorrect !== null || !isGameActive) return;
-    setSelectedAnswer(value);
-    checkAnswer(value);
-  };
-
-  const startOver = () => {
-    setScore(0);
-    setSelectedAnswer(null);
-    setIsCorrect(null);
-    setTimeLeft(60);
-    setIsGameActive(true);
-    setStreak(0);
-    setShowCountdown(true);
-  };
-
-  const handleCountdownComplete = useCallback(() => {
-    setShowCountdown(false);
-    generateQuestion();
-  }, []);
-
-  const handleTableToggle = (table: number) => {
-    setSelectedTables((current) => {
-      const updated = current.includes(table)
-        ? current.filter((t) => t !== table)
-        : [...current, table].sort((a, b) => a - b);
-
-      if (updated.length === 0) {
-        console.warn("You must keep at least one table selected");
-        return current;
-      }
-      return updated;
-    });
-  };
-
-  const handleQuestionPartToggle = (part: QuestionPart) => {
-    setAllowedQuestionParts((current) => {
-      const updated = current.includes(part) ? current.filter((p) => p !== part) : [...current, part];
-
-      if (updated.length === 0) {
-        console.warn("You must keep at least one question type selected");
-        return current;
-      }
-      return updated;
-    });
-  };
-
-  // Remove auto-generate on mount - countdown handles it now
-
-  const getSuccessMessage = () => {
-    const messages = [
-      { text: "Fantastic job! You're getting better every day!", icon: "🌟" },
-      { text: "Excellent work! Keep shining bright!", icon: "⭐" },
-      { text: "Amazing! You're becoming a math champion!", icon: "🏆" },
-      { text: "Wonderful! Your brain is growing stronger!", icon: "🧠" },
-      { text: "Spectacular! You're on fire today!", icon: "🔥" },
-      { text: "Brilliant! You make math look easy!", icon: "✨" },
-      { text: "Incredible! You're a math superstar!", icon: "🌈" },
-      { text: "Outstanding! Keep up the great work!", icon: "🎯" },
-      { text: "Superb! Your hard work is paying off!", icon: "🎨" },
-      { text: "Perfect! You're unstoppable!", icon: "🚀" },
-    ];
-    return messages[Math.floor(Math.random() * messages.length)];
-  };
-
-  const getEncouragementMessage = () => {
-    const messages = [
-      { text: "Don't worry! Let's try again together!", icon: "🤗" },
-      { text: "You're getting closer! Keep trying!", icon: "👊" },
-      { text: "Almost there! You can do this!", icon: "💪" },
-      { text: "Practice makes perfect! Let's continue!", icon: "🌱" },
-      { text: "Keep going! Every attempt makes you stronger!", icon: "🎯" },
-      { text: "You're learning! That's what matters!", icon: "📚" },
-      { text: "Mistakes help us learn! Try once more!", icon: "🌈" },
-      { text: "Stay positive! You'll get it next time!", icon: "☀️" },
-      { text: "You're brave to keep trying! Let's go again!", icon: "🦁" },
-      { text: "Never give up! You're getting better!", icon: "🌟" },
-    ];
-    return messages[Math.floor(Math.random() * messages.length)];
-  };
-
-  useEffect(() => {
-    if (!isGameActive && score > 0) {
-      scoreHistoryUtils.addScore(score, queryClient);
-      // Celebrate if this was a new high score
-      if (score >= highScore && score > 0) {
-        celebrateHighScore();
-      }
-    }
-  }, [isGameActive, score, highScore, queryClient]);
+  const {
+    num1,
+    num2,
+    selectedAnswer,
+    score,
+    highScore,
+    isCorrect,
+    selectedTables,
+    questionPart,
+    allowedQuestionParts,
+    options,
+    timeLeft,
+    isGameActive,
+    streak,
+    bestStreak,
+    showCountdown,
+    handleOptionClick,
+    startOver,
+    handleCountdownComplete,
+    handleTableToggle,
+    handleQuestionPartToggle,
+  } = useGameLogic();
 
   return (
     <div className="min-h-screen bg-game-background p-4 sm:p-8 flex flex-col items-center justify-center">
@@ -315,9 +96,9 @@ export default function Index() {
               Skapad av <span className="text-white/80 font-medium">Magnus Froste</span>
             </p>
             <p className="mt-1">
-              <a 
-                href="https://github.com/magnusfroste" 
-                target="_blank" 
+              <a
+                href="https://github.com/magnusfroste"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-white/90 underline underline-offset-2 transition-colors"
               >
