@@ -20,7 +20,7 @@ export function useGameLogic() {
   const [num2, setNum2] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
+  const [highScore, setHighScore] = useState(() => scoreStorage.getHighScore());
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [selectedTables, setSelectedTables] = useState<number[]>([...ALL_TABLES]);
   const [questionPart, setQuestionPart] = useState<QuestionPart>("result");
@@ -115,6 +115,7 @@ export function useGameLogic() {
       setScore(newScore);
       if (newScore > highScore) {
         setHighScore(newScore);
+        scoreStorage.setHighScore(newScore);
       }
       const newStreak = streak + 1;
       setStreak(newStreak);
