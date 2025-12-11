@@ -308,6 +308,23 @@ export default function Index() {
           <GameCard className="mt-8">
             <ScoreHistory />
           </GameCard>
+
+          {/* Footer */}
+          <footer className="mt-8 text-center text-white/60 text-sm">
+            <p>
+              Skapad av <span className="text-white/80 font-medium">Magnus Froste</span>
+            </p>
+            <p className="mt-1">
+              <a 
+                href="https://github.com/magnusfroste" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-white/90 underline underline-offset-2 transition-colors"
+              >
+                Open Source på GitHub
+              </a>
+            </p>
+          </footer>
         </div>
       </div>
     </div>
