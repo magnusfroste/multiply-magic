@@ -1,0 +1,10 @@
+# Multiply Magic
+
+> A fun, timed multiplication game that helps kids master their times tables.
+
+Multiply Magic lets children practice specific multiplication tables against the clock, with multiple-choice questions, streak bonuses, high scores and a score history to track progress. It works on desktop and mobile and needs no account. Part of [skolappar.com](https://www.skolappar.com), learning apps built by parents.
+
+## Links
+
+- [Play Multiply Magic](https://multiplymagic.skolappar.com/)
+- [More learning apps on skolappar.com](https://www.skolappar.com)
