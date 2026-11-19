@@ -44,32 +44,32 @@ export function getRandomFromArray<T>(arr: T[]): T {
 
 export function getSuccessMessage(): { text: string; icon: string } {
   const messages = [
-    { text: "Fantastic job! You're getting better every day!", icon: "🌟" },
-    { text: "Excellent work! Keep shining bright!", icon: "⭐" },
-    { text: "Amazing! You're becoming a math champion!", icon: "🏆" },
-    { text: "Wonderful! Your brain is growing stronger!", icon: "🧠" },
-    { text: "Spectacular! You're on fire today!", icon: "🔥" },
-    { text: "Brilliant! You make math look easy!", icon: "✨" },
-    { text: "Incredible! You're a math superstar!", icon: "🌈" },
-    { text: "Outstanding! Keep up the great work!", icon: "🎯" },
-    { text: "Superb! Your hard work is paying off!", icon: "🎨" },
-    { text: "Perfect! You're unstoppable!", icon: "🚀" },
+    { text: "Fantastiskt! Du blir bättre varje dag!", icon: "🌟" },
+    { text: "Snyggt jobbat! Fortsätt lysa!", icon: "⭐" },
+    { text: "Otroligt! Du är på väg att bli mattemästare!", icon: "🏆" },
+    { text: "Härligt! Hjärnan blir starkare av det här!", icon: "🧠" },
+    { text: "Toppen! Du är helt glödhet idag!", icon: "🔥" },
+    { text: "Briljant! Du får matte att se lätt ut!", icon: "✨" },
+    { text: "Ofattbart bra! Du är en mattstjärna!", icon: "🌈" },
+    { text: "Fenomenalt! Fortsätt precis så!", icon: "🎯" },
+    { text: "Utmärkt! All träning ger resultat!", icon: "🎨" },
+    { text: "Perfekt! Ingen stoppar dig!", icon: "🚀" },
   ];
   return getRandomFromArray(messages);
 }
 
 export function getEncouragementMessage(): { text: string; icon: string } {
   const messages = [
-    { text: "Don't worry! Let's try again together!", icon: "🤗" },
-    { text: "You're getting closer! Keep trying!", icon: "👊" },
-    { text: "Almost there! You can do this!", icon: "💪" },
-    { text: "Practice makes perfect! Let's continue!", icon: "🌱" },
-    { text: "Keep going! Every attempt makes you stronger!", icon: "🎯" },
-    { text: "You're learning! That's what matters!", icon: "📚" },
-    { text: "Mistakes help us learn! Try once more!", icon: "🌈" },
-    { text: "Stay positive! You'll get it next time!", icon: "☀️" },
-    { text: "You're brave to keep trying! Let's go again!", icon: "🦁" },
-    { text: "Never give up! You're getting better!", icon: "🌟" },
+    { text: "Inga problem! Vi testar igen!", icon: "🤗" },
+    { text: "Du är nära nu! Fortsätt!", icon: "👊" },
+    { text: "Nästan där! Det här klarar du!", icon: "💪" },
+    { text: "Övning ger färdighet! Kör vidare!", icon: "🌱" },
+    { text: "Fortsätt! Varje försök gör dig starkare!", icon: "🎯" },
+    { text: "Du lär dig! Det är det viktigaste!", icon: "📚" },
+    { text: "Fel hjälper oss att lära! Testa en gång till!", icon: "🌈" },
+    { text: "Håll humöret uppe! Nästa går bättre!", icon: "☀️" },
+    { text: "Modigt att fortsätta! Nu kör vi igen!", icon: "🦁" },
+    { text: "Ge inte upp! Du blir bättre hela tiden!", icon: "🌟" },
   ];
   return getRandomFromArray(messages);
 }
