@@ -1,10 +1,10 @@
-# Multiply Magic
+# MultiplyMagic – gångertabellerna på tid
 
-> A fun, timed multiplication game that helps kids master their times tables.
+> Ett räknespel där barn tränar gångertabellerna mot klockan: svara på så många multiplikationsfrågor du hinner på 60 sekunder.
 
-Multiply Magic lets children practice specific multiplication tables against the clock, with multiple-choice questions, streak bonuses, high scores and a score history to track progress. It works on desktop and mobile and needs no account. Part of [skolappar.com](https://www.skolappar.com), learning apps built by parents.
+MultiplyMagic låter barnet välja vilka tabeller (1–10) och vilken frågetyp det vill träna – första talet, andra talet eller produkten, eller en blandning. Varje fråga har fem svarsalternativ och rätt eller fel visas direkt. Spelet räknar poäng, svit och rekord och visar en resultathistorik över tidigare rundor. Passar låg- och mellanstadiet, fungerar på iPad, mobil och dator och kräver ingen inloggning. Resultaten sparas bara i webbläsaren. En del av [Skolappar.com](https://www.skolappar.com), pedagogiska appar av föräldrar.
 
-## Links
+## Viktiga länkar
 
-- [Play Multiply Magic](https://multiplymagic.skolappar.com/)
-- [More learning apps on skolappar.com](https://www.skolappar.com)
+- [Spela MultiplyMagic](https://gangertabellen.skolappar.com/)
+- [Skolappar.com – fler pedagogiska appar](https://www.skolappar.com/)

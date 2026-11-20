@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://multiplymagic.skolappar.com/sitemap.xml
+Sitemap: https://gangertabellen.skolappar.com/sitemap.xml
