@@ -6,6 +6,8 @@ försöker slå sitt eget rekord.
 
 **Spela:** https://gangertabellen.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
+![MultiplyMagic](public/kort.png)
+
 Började som ett Lovable-projekt och körs nu fristående.
 
 ## Vad du kan göra
