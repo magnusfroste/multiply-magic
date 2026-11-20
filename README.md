@@ -1,60 +1,76 @@
-# Multiply Magic ✨
+# MultiplyMagic
 
-A fun multiplication game where you solve multiplication problems against the clock. Build streaks, earn high scores, and master your times tables!
+Gångertabellerna på tid för barn som tränar multiplikation. Barnet svarar på så många
+multiplikationsfrågor det hinner på 60 sekunder, väljer vilka tabeller det vill träna och
+försöker slå sitt eget rekord.
 
-**Published on [skolappar.com](https://www.skolappar.com) - Democratizing learning apps, built by vibe-coding parents who love helping their kids learn!**
+**Spela:** https://gangertabellen.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
-## Features
+Började som ett Lovable-projekt och körs nu fristående.
 
-- **Timed Challenges**: Race against the clock
-- **Multiple Choice**: Pick the right answer from options
-- **Streak System**: Build streaks for bonus points
-- **Score History**: Track your progress over time
-- **High Scores**: Beat your best performance
-- **Table Selection**: Practice specific multiplication tables
-- **Responsive Design**: Works on desktop and mobile
+## Vad du kan göra
 
-## Getting Started
+- **60 sekunder per runda**, med nedräkning 3–2–1 innan start. Bakgrunden byter färg när
+  tio sekunder återstår.
+- **Välja tabeller**: 1–10, alla eller bara de du vill fokusera på.
+- **Välja frågetyp**: gissa första talet, andra talet eller produkten (`? × 7 = 42`,
+  `6 × ? = 42`, `6 × 7 = ?`) – eller blanda.
+- **Fem svarsalternativ** per fråga. Rätt eller fel visas direkt med ljud och en peppande text.
+- **Poäng, svit och rekord**: aktuell svit, bästa svit i rundan och ditt högsta resultat.
+- **Resultathistorik** som linjediagram över tidigare rundor.
+- Ljudet går att stänga av.
 
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm or yarn
-
-### Installation
+## Kom igång
 
 ```bash
 npm install
+npm run dev        # utvecklingsserver
+npm run build      # produktionsbygge till dist/
+npm run build:dev  # bygge i utvecklingsläge
+npm run preview    # förhandsgranska bygget
+npm run lint       # eslint
 ```
 
-### Run Locally
+Docker-bygget använder Node 22.
+
+## Docker
 
 ```bash
-npm run dev
+docker build -t multiplymagic .
+docker run --rm -p 8080:8080 multiplymagic
 ```
 
-### Build for Production
+Servern ligger bakom nginx med `deploy/nginx.conf`.
 
-```bash
-npm run build
+## Integritet
+
+- Ingen spårning, inga kakor, ingen analys, inget konto, ingen AI, inga nätverksanrop.
+- Typsnittet Fredoka ligger i appen (`public/fonts/`). Ljuden skapas i webbläsaren med
+  Web Audio.
+- Det som sparas ligger i `localStorage`:
+  - `matte-kul-scores` – resultathistoriken
+  - `matte-kul-high-score` – rekordet
+  - `soundMuted` – om ljudet är avstängt
+
+  Rensa webbläsardata så är det borta.
+
+## Struktur
+
+```
+src/
+  pages/Index.tsx               spelsidan
+  hooks/useGameLogic.ts         timer, frågor, poäng, svit, rekord
+  lib/gameUtils.ts              svarsalternativ och peppande texter
+  lib/scoreStorage.ts           historik och rekord i localStorage
+  lib/sounds.ts                 ljudeffekter (Web Audio)
+  lib/confetti.ts               konfetti
+  components/GameQuestion.tsx   frågan och svarsknapparna
+  components/GameHeader.tsx     poäng, tid, svit och inställningar
+  components/SettingsContent.tsx välj tabeller och frågetyper
+  components/ScoreHistory.tsx   diagram över tidigare rundor
+deploy/nginx.conf               nginx-konfiguration för Docker
 ```
 
-## How to Play
+## Licens
 
-1. Select which multiplication tables to practice
-2. Start the game when ready
-3. Choose the correct answer before time runs out
-4. Build streaks for bonus points
-5. Beat your high score!
-
-## Tech Stack
-
-- **React 19** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **shadcn/ui** - Components
-- **Tailwind CSS** - Styling
-
-## License
-
-MIT 
+MIT – se [LICENSE](LICENSE).
