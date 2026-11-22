@@ -8,7 +8,7 @@ försöker slå sitt eget rekord.
 
 ![MultiplyMagic](public/kort.png)
 
-Började som ett Lovable-projekt och körs nu fristående.
+Körs fristående.
 
 ## Vad du kan göra
 
