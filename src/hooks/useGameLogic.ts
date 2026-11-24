@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { QuestionPart } from "@/types/game";
 import { 
@@ -11,6 +11,7 @@ import {
 import { scoreStorage } from "@/lib/scoreStorage";
 import { playCorrectSound, playIncorrectSound } from "@/lib/sounds";
 import { celebrateHighScore } from "@/lib/confetti";
+import { report } from "@/lib/skolappar";
 
 export function useGameLogic() {
   const queryClient = useQueryClient();
@@ -31,6 +32,9 @@ export function useGameLogic() {
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [showCountdown, setShowCountdown] = useState(true);
+  // Wrong answers this round, for the round result reported to skolappar
+  const wrongRef = useRef(0);
+  const roundRunning = useRef(false);
 
   // Timer effect
   useEffect(() => {
@@ -61,6 +65,14 @@ export function useGameLogic() {
       document.body.style.background = "linear-gradient(135deg, #2D1B69 0%, #1E1B4B 100%)";
     };
   }, [isGameActive, showCountdown, timeLeft]);
+
+  // Report the round's result (share of answers that were right) once the time is up
+  useEffect(() => {
+    if (isGameActive || !roundRunning.current) return;
+    roundRunning.current = false;
+    const answered = score + wrongRef.current;
+    report("round_done", answered ? Math.round((score / answered) * 100) : 0);
+  }, [isGameActive, score]);
 
   // Save score when game ends
   useEffect(() => {
@@ -125,6 +137,8 @@ export function useGameLogic() {
       setTimeout(generateQuestion, 1500);
     } else {
       playIncorrectSound();
+      wrongRef.current += 1;
+      report("hint");
       setStreak(0);
       setTimeout(generateQuestion, 2000);
     }
@@ -148,6 +162,9 @@ export function useGameLogic() {
 
   const handleCountdownComplete = useCallback(() => {
     setShowCountdown(false);
+    wrongRef.current = 0;
+    roundRunning.current = true;
+    report("round_start");
     generateQuestion();
   }, [generateQuestion]);
 
