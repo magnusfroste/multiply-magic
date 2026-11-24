@@ -1,6 +1,7 @@
 import { Flame, RotateCcw, Settings2, Timer, Volume2, VolumeX } from "lucide-react";
 import { useState } from "react";
 import { isSoundMuted, toggleMute } from "@/lib/sounds";
+import { report } from "@/lib/skolappar";
 import { Button } from "@/components/ui/button";
 import { ScoreDisplay } from "@/components/ScoreDisplay";
 import {
@@ -41,6 +42,7 @@ export function GameHeader({
   const handleMuteToggle = () => {
     const newMuted = toggleMute();
     setMuted(newMuted);
+    if (newMuted) report("sound_off");
   };
 
   const timePercentage = (timeLeft / 60) * 100;
