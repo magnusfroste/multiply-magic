@@ -4,7 +4,7 @@ Gångertabellerna på tid för barn som tränar multiplikation. Barnet svarar p�
 multiplikationsfrågor det hinner på 60 sekunder, väljer vilka tabeller det vill träna och
 försöker slå sitt eget rekord.
 
-**Spela:** https://gangertabellen.skolappar.com · En del av [Skolappar](https://www.skolappar.com) – pedagogiska appar av föräldrar · öppen källkod (MIT)
+**Spela:** https://gangertabellen.skolappar.org · En del av [Skolappar](https://www.skolappar.org) – pedagogiska appar av föräldrar · öppen källkod (MIT)
 
 ![MultiplyMagic](public/kort.png)
 

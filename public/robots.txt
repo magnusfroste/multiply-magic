@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://multiply-magic.skolappar.com/sitemap.xml
+Sitemap: https://multiply-magic.skolappar.org/sitemap.xml
